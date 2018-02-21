@@ -1,9 +1,12 @@
 const express = require('express')
 const app = express()
+const sensorVal = require('./sensorval')
+const mysql = require('promise-mysql');
+
 
 var myLogger = function (req, res, next) {
   console.log('LOGGED')
-  console.log(req)
+//  console.log(req)
   next()
 }
 
@@ -27,9 +30,30 @@ app.use('/user/:id', function (req, res, next) {
   console.log('Request Type:', req.method)
   next()
 })
-app.use('/user/:id', function (req, res, next) {
-  console.log('ID:', req.params.id)
-  res.send('USER :'+ req.params.id)
+app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, next) {
+  console.log('Request time: ', req.requestTime)
+  mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
+  mysensorVal.logValue();
+  var connection;
+  mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'obscured',
+    database: 'test_howard'
+  }).then(function(conn){
+    // do stuff with conn
+    connection = conn;
+    return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+      [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
+  }).then(function(rows){
+    console.log(rows);
+    connection.end();
+  }).catch(function(error){
+    if (connection && connection.end) connection.end();
+    //logs out the error
+    console.log(error);
+  });
+  res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 })
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
