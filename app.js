@@ -26,10 +26,45 @@ app.get('/', function (req, res) {
   res.send(responseText)
 })
 
+/*
 app.use('/user/:id', function (req, res, next) {
   console.log('Request Type:', req.method)
   next()
 })
+*/
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json()); // for parsing application/json
+
+app.post('/profile', function (req, res, next) {
+  console.log(req.body);
+  console.log('Request time: ', req.requestTime)
+  mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
+  mysensorVal.logValue();
+
+  var connection;
+  mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'obscured',
+    database: 'test_howard'
+  }).then(function(conn){
+    // do stuff with conn
+    connection = conn;
+    return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+      [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
+  }).then(function(rows){
+    console.log(rows);
+    connection.end();
+  }).catch(function(error){
+    if (connection && connection.end) connection.end();
+    //logs out the error
+    console.log(error);
+  });
+  res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
+
+});
+
 app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, next) {
   console.log('Request time: ', req.requestTime)
   mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
