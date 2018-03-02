@@ -4,7 +4,7 @@
   "description": "test of express",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "curl -H 'content-type:application/json' -d @sensorinstance.json localhost:3000/profile",
     "start": "node app.js"
   },
   "author": "Howard",
