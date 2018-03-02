@@ -2,11 +2,12 @@ const express = require('express')
 const app = express()
 const sensorVal = require('./sensorval')
 const mysql = require('promise-mysql');
+const ini = require('ini');
 
 
 var myLogger = function (req, res, next) {
-  console.log('LOGGED')
-//  console.log(req)
+  console.log('LOGGED');
+//  console.log(process.env.npm_config_dbpwd);
   next()
 }
 
@@ -43,10 +44,11 @@ app.post('/profile', function (req, res, next) {
   mysensorVal.logValue();
 
   var connection;
+//  var config = ini.parse(process.env.npm_config_key);
   mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: 'obscured',
+    user: process.env.npm_config_dbuser,
+    password: process.env.npm_config_dbpwd,
     database: 'test_howard'
   }).then(function(conn){
     // do stuff with conn
