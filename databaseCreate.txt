@@ -1,0 +1,3 @@
+create database howardTemp;
+use howardTemp;
+create table temperatureReadings( id integer key auto_increment, readingValue VARCHAR(20), deviceIdentity VARCHAR(20), openClosed VARCHAR(20));
