@@ -49,7 +49,8 @@ app.post('/profile', function (req, res, next) {
     host: 'localhost',
     user: process.env.npm_config_dbuser,
     password: process.env.npm_config_dbpwd,
-    database: 'test_howard'
+    database: process.env.npm_config_dbname,
+    port: process.env.npm_config_dbport
   }).then(function(conn){
     // do stuff with conn
     connection = conn;

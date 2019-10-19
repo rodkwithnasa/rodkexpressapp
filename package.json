@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "curl -H 'content-type:application/json' -d @sensorinstance.json localhost:3000/profile",
+    "proxy": "~/cloud_sql_proxy -instances=crucial-garden-217908:us-central1:howardinstance=tcp:3306&",
+    "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 < databaseCreate.txt",
     "start": "node app.js"
   },
   "author": "Howard",
