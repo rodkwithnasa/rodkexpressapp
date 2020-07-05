@@ -11,7 +11,8 @@ describe('POST /profile', function() {
       .set('Content-Type', 'application/json')
       .expect(200)
       .then( res => {
-       assert.equal(res.text,'Sensor :424243 Temp :29.2 Door: 0')
+       assert.equal(res.text,'Sensor :'+ sensorinstance.sensor + ' Temp :' +
+       sensorinstance.tempval + ' Door: ' + sensorinstance.doorstate)
       })
   });
 });
