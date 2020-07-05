@@ -4,7 +4,7 @@
   "description": "test of express",
   "main": "app.js",
   "scripts": {
-    "test": "curl -H 'content-type:application/json' -d @sensorinstance.json localhost:3000/profile",
+    "test": "mocha",
     "proxy": "~/cloud_sql_proxy -instances=crucial-garden-217908:us-central1:howardinstance=tcp:3306&",
     "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 < databaseCreate.txt",
     "start": "node app.js"
@@ -16,5 +16,9 @@
     "express": "^4.16.2",
     "ini": "^1.3.5",
     "promise-mysql": "^3.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.0.1",
+    "supertest": "^4.0.2"
   }
 }
