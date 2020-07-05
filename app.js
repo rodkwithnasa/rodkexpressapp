@@ -97,5 +97,5 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
   res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 })
 
-//app.listen(3001, () => console.log('Example app listening on port 3001!'));
+module.exports.server = app.listen(3001, () => console.log('Example app listening on port 3001!'));
 

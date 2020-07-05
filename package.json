@@ -18,6 +18,7 @@
     "promise-mysql": "^3.2.0"
   },
   "devDependencies": {
+    "http-terminator": "^2.0.3",
     "mocha": "^8.0.1",
     "supertest": "^4.0.2"
   }

@@ -2,6 +2,11 @@ const request = require('supertest');
 const assert = require('assert').strict
 const app = require('../app.js')
 const sensorinstance = require('../sensorinstance.json')
+const { createHttpTerminator } = require('http-terminator')
+const server = app.server
+const httpTerminator = createHttpTerminator({ server })
+
+
 
 describe('POST /profile', function() {
   it('responds with text', function() {
@@ -15,4 +20,7 @@ describe('POST /profile', function() {
        sensorinstance.tempval + ' Door: ' + sensorinstance.doorstate)
       })
   });
+  after('close server', function () {
+    httpTerminator.terminate()
+  })
 });
