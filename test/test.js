@@ -15,10 +15,10 @@ describe('POST /profile', function() {
       .send(sensorinstance)
       .set('Content-Type', 'application/json')
       .set('Accept','application/json')
-      .expect('Content-Type', 'text/html; charset=utf-8')
-      .expect(200,{})
+      .expect('Content-Type', 'application/json; charset=utf-8')
+      .expect(200,/\{\s*\"insertId\"\:\s*\d*\s*\}/)
     
-    assert.equal(res.text,`Sensor :${sensorinstance.sensor} Temp :${sensorinstance.tempval} Door: ${sensorinstance.doorstate}`)
+//    assert.equal(res.text,`Sensor :${sensorinstance.sensor} Temp :${sensorinstance.tempval} Door: ${sensorinstance.doorstate}`)
     
   });
   after('close server', function () {

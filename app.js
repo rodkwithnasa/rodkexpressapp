@@ -60,14 +60,17 @@ app.post('/profile', function (req, res, next) {
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
   }).then(function(rows){
     console.log(rows);
+    const {insertId} = rows
+    const myResponse = {'insertId':insertId}
+    res.json(myResponse)
     connection.end();
   }).catch(function(error){
     if (connection && connection.end) connection.end();
     //logs out the error
     console.log(error);
   });
-  
-  res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
+
+  //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 
 });
 
