@@ -21,6 +21,15 @@ describe('POST /profile', function() {
 //    assert.equal(res.text,`Sensor :${sensorinstance.sensor} Temp :${sensorinstance.tempval} Door: ${sensorinstance.doorstate}`)
     
   });
+  describe('GET /temp?q=id', function () {
+      it('responds with temperature', function() {
+          return request(app)
+          .get('/temp?q=10')
+          .expect(200).then(res => {
+              console.log('in response')
+          })
+      })
+  })
   after('close server', function () {
     httpTerminator.terminate()
   })

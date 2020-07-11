@@ -28,6 +28,32 @@ app.get('/', function (req, res) {
   res.send(responseText)
 })
 
+app.get('/temp', function (req, res) {
+    console.log(`query param: ${req.query.q}`)
+      mysql.createConnection({
+    host: 'localhost',
+    user: process.env.npm_config_dbuser,
+    password: process.env.npm_config_dbpwd,
+    database: process.env.npm_config_dbname,
+    port: process.env.npm_config_dbport
+  }).then(function(conn){
+    // do stuff with conn
+    connection = conn;
+    return connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
+  }).then(function(rows){
+    console.log(rows);
+//    const {insertId} = rows
+//    const myResponse = {'insertId':insertId}
+//    res.json(myResponse)
+    connection.end();
+  }).catch(function(error){
+    if (connection && connection.end) connection.end();
+    //logs out the error
+    console.log(error);
+  })
+    res.send('ok')
+})
+
 /*
 app.use('/user/:id', function (req, res, next) {
   console.log('Request Type:', req.method)
