@@ -9,16 +9,15 @@ const httpTerminator = createHttpTerminator({ server })
 
 
 describe('POST /profile', function() {
-  it('responds with text', function() {
-    return request(app)
+  it('responds with text', async function() {
+    const res = await request(app)
       .post('/profile')
       .send(sensorinstance)
       .set('Content-Type', 'application/json')
       .expect(200)
-      .then( res => {
-       assert.equal(res.text,'Sensor :'+ sensorinstance.sensor + ' Temp :' +
-       sensorinstance.tempval + ' Door: ' + sensorinstance.doorstate)
-      })
+    
+    assert.equal(res.text,`Sensor :${sensorinstance.sensor} Temp :${sensorinstance.tempval} Door: ${sensorinstance.doorstate}`)
+    
   });
   after('close server', function () {
     httpTerminator.terminate()
