@@ -46,7 +46,7 @@ app.post('/profile', function (req, res, next) {
 
   var connection;
 //  var config = ini.parse(process.env.npm_config_key);
-/*
+
   mysql.createConnection({
     host: 'localhost',
     user: process.env.npm_config_dbuser,
@@ -66,7 +66,7 @@ app.post('/profile', function (req, res, next) {
     //logs out the error
     console.log(error);
   });
-  */
+  
   res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 
 });
