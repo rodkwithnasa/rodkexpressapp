@@ -14,6 +14,8 @@ describe('POST /profile', function() {
       .post('/profile')
       .send(sensorinstance)
       .set('Content-Type', 'application/json')
+      .set('Accept','application/json')
+      .expect('Content-Type', 'text/html; charset=utf-8')
       .expect(200,{})
     
     assert.equal(res.text,`Sensor :${sensorinstance.sensor} Temp :${sensorinstance.tempval} Door: ${sensorinstance.doorstate}`)
