@@ -4,7 +4,7 @@ module.exports = app = express()
 const sensorVal = require('./sensorval')
 const mysql = require('promise-mysql');
 const ini = require('ini');
-
+var connection;
 
 var myLogger = function (req, res, next) {
   console.log('LOGGED');
@@ -50,6 +50,8 @@ app.get('/temp', function (req, res) {
     if (connection && connection.end) connection.end();
     //logs out the error
     console.log(error);
+    res.status(500)
+    res.send('not ok')
   })
 //    res.send('ok')
 })
@@ -70,7 +72,6 @@ app.post('/profile', function (req, res, next) {
   mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
   mysensorVal.logValue();
 
-  var connection;
 //  var config = ini.parse(process.env.npm_config_key);
 
   mysql.createConnection({
@@ -94,6 +95,8 @@ app.post('/profile', function (req, res, next) {
     if (connection && connection.end) connection.end();
     //logs out the error
     console.log(error);
+    res.status(500)
+    res.send('not ok')
   });
 
   //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
@@ -122,6 +125,8 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
     if (connection && connection.end) connection.end();
     //logs out the error
     console.log(error);
+    res.status(500)
+    res.send('not ok')    
   });
   res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 })
