@@ -26,7 +26,8 @@ describe('POST /profile', function() {
           return request(app)
           .get('/temp?q=10')
           .expect(200).then(res => {
-              console.log('in response')
+              console.log(`in response: ${JSON.stringify(res)}`)
+                assert.equal(res.text,`{"readingValue":"${sensorinstance.tempval}"}`)              
           })
       })
   })

@@ -42,16 +42,16 @@ app.get('/temp', function (req, res) {
     return connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
   }).then(function(rows){
     console.log(rows);
-//    const {insertId} = rows
-//    const myResponse = {'insertId':insertId}
-//    res.json(myResponse)
+    const {readingValue} = rows[0]
+    const myResponse = {'readingValue':readingValue}
+    res.json(myResponse)
     connection.end();
   }).catch(function(error){
     if (connection && connection.end) connection.end();
     //logs out the error
     console.log(error);
   })
-    res.send('ok')
+//    res.send('ok')
 })
 
 /*
