@@ -47,10 +47,11 @@ app.post('/profile', function (req, res, next) {
 //  var config = ini.parse(process.env.npm_config_key);
   mysql.createConnection({
     host: 'localhost',
-    user: process.env.npm_config_dbuser,
-    password: process.env.npm_config_dbpwd,
-    database: process.env.npm_config_dbname,
-    port: process.env.npm_config_dbport
+    user: process.env.npm_app_dbuser,
+    password: process.env.npm_app_dbpwd,
+    database: process.env.npm_app_dbname,
+    port: process.env.npm_app_dbport,
+    flags: '+get-server-public-key',
   }).then(function(conn){
     // do stuff with conn
     connection = conn;
