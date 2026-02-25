@@ -21,4 +21,4 @@ sensorval.prototype.getdoorstate = function() {
   return this.doorstate;
 }
 
-module.exports = sensorval;
+export default sensorval;
