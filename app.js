@@ -1,13 +1,13 @@
-const express = require('express')
+import express from 'express';
 const app = express()
-const sensorVal = require('./sensorval')
-const mysql = require('promise-mysql');
-const ini = require('ini');
+import sensorVal from './sensorval.js';
+import mysql from 'mysql2/promise';
+// const ini = require('ini');
 
 
 var myLogger = function (req, res, next) {
   console.log('LOGGED');
-//  console.log(process.env.npm_config_dbpwd);
+//  console.log(process.env.dbpwd);
   next()
 }
 
@@ -33,25 +33,24 @@ app.use('/user/:id', function (req, res, next) {
   next()
 })
 */
-var bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 
 app.use(bodyParser.json()); // for parsing application/json
 
 app.post('/profile', function (req, res, next) {
   console.log(req.body);
   console.log('Request time: ', req.requestTime)
-  mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
+  const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
   mysensorVal.logValue();
 
   var connection;
 //  var config = ini.parse(process.env.npm_config_key);
   mysql.createConnection({
     host: 'localhost',
-    user: process.env.npm_app_dbuser,
-    password: process.env.npm_app_dbpwd,
-    database: process.env.npm_app_dbname,
-    port: process.env.npm_app_dbport,
-    flags: '+get-server-public-key',
+    user: process.env.dbuser,
+    password: process.env.dbpwd,
+    database: process.env.dbname,
+    port: process.env.dbport,
   }).then(function(conn){
     // do stuff with conn
     connection = conn;
@@ -71,14 +70,15 @@ app.post('/profile', function (req, res, next) {
 
 app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, next) {
   console.log('Request time: ', req.requestTime)
-  mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
+  const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
   mysensorVal.logValue();
   var connection;
   mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: 'obscured',
-    database: 'test_howard'
+    user: process.env.dbuser,
+    password: process.env.dbpwd,
+    database: process.env.dbname,
+    port: process.env.dbport,
   }).then(function(conn){
     // do stuff with conn
     connection = conn;
