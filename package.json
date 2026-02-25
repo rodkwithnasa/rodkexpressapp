@@ -1,6 +1,6 @@
 {
   "name": "rodkexpressapp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "test of express",
   "main": "app.js",
   "type": "module",
