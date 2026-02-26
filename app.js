@@ -4,7 +4,7 @@ import sensorVal from './sensorval.js';
 import mysql from 'mysql2/promise';
 // const ini = require('ini');
 
-
+var connection;
 var myLogger = function (req, res, next) {
   console.log('LOGGED');
 //  console.log(process.env.dbpwd);
@@ -27,6 +27,34 @@ app.get('/', function (req, res) {
   res.send(responseText)
 })
 
+app.get('/temp', function (req, res) {
+    console.log(`query param: ${req.query.q}`)
+      mysql.createConnection({
+    host: 'localhost',
+    user: process.env.dbuser,
+    password: process.env.dbpwd,
+    database: process.env.dbname,
+    port: process.env.dbport
+  }).then(function(conn){
+    // do stuff with conn
+    connection = conn;
+    return connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
+  }).then(function(rows){
+    console.log(rows);
+    const {readingValue} = rows[0][0]
+    const myResponse = {'readingValue':readingValue}
+    res.json(myResponse)
+    connection.end();
+  }).catch(function(error){
+    if (connection?.end) connection.end();
+    //logs out the error
+    console.log(error);
+    res.status(500)
+    res.send('not ok')
+  })
+//    res.send('ok')
+})
+
 /*
 app.use('/user/:id', function (req, res, next) {
   console.log('Request Type:', req.method)
@@ -43,8 +71,8 @@ app.post('/profile', function (req, res, next) {
   const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
   mysensorVal.logValue();
 
-  var connection;
 //  var config = ini.parse(process.env.npm_config_key);
+  
   mysql.createConnection({
     host: 'localhost',
     user: process.env.dbuser,
@@ -54,17 +82,25 @@ app.post('/profile', function (req, res, next) {
   }).then(function(conn){
     // do stuff with conn
     connection = conn;
+    console.log('In profile connection before insert')
     return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
   }).then(function(rows){
+    console.log('in reponse to query insertion')
     console.log(rows);
+    const [{insertId}] = rows
+    const myResponse = {'insertId':insertId}
+    res.json(myResponse)
     connection.end();
   }).catch(function(error){
-    if (connection && connection.end) connection.end();
+    if (connection?.end) connection.end();
     //logs out the error
     console.log(error);
+    res.status(500)
+    res.send('not ok')
   });
-  res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
+
+  //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 
 });
 
@@ -88,11 +124,18 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
     console.log(rows);
     connection.end();
   }).catch(function(error){
-    if (connection && connection.end) connection.end();
+    if (connection?.end) connection.end();
     //logs out the error
     console.log(error);
+    res.status(500)
+    res.send('not ok')    
   });
   res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 })
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+export const server = app.listen(3000, () => {
+  console.log('Example app listening on port 3000!');
+});
+
+export default app;
+

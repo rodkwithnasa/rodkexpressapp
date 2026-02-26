@@ -1,11 +1,11 @@
 {
   "name": "rodkexpressapp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "test of express",
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "curl -H 'content-type:application/json' -d @sensorinstance.json localhost:3000/profile",
+    "test": "mocha",
     "proxy": "~/cloud-sql-proxy crucial-garden-217908:us-central1:howardinstance",
     "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 --get-server-public-key < databaseCreate.txt",
     "start": "node app.js"
@@ -16,5 +16,11 @@
   "dependencies": {
     "express": "^4.16.2",
     "mysql2": "^3.18.0"
+  },
+  "devDependencies": {
+    "@types/http-terminator": "^2.0.5",
+    "http-terminator": "^2.0.3",
+    "mocha": "^8.0.1",
+    "supertest": "^4.0.2"
   }
 }
