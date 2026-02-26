@@ -12,7 +12,10 @@
   },
   "author": "Howard",
   "license": "MIT",
-  "repository": "github:rodkwithnasa/rodkexpressapp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodkwithnasa/rodkexpressapp.git"
+  },
   "dependencies": {
     "express": "^4.16.2",
     "mysql2": "^3.18.0"
