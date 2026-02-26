@@ -18,6 +18,7 @@
     "mysql2": "^3.18.0"
   },
   "devDependencies": {
+    "@types/http-terminator": "^2.0.5",
     "http-terminator": "^2.0.3",
     "mocha": "^8.0.1",
     "supertest": "^4.0.2"
