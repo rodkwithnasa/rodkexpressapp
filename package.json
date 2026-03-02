@@ -23,7 +23,7 @@
   "devDependencies": {
     "@types/http-terminator": "^2.0.5",
     "http-terminator": "^2.0.3",
-    "mocha": "^8.0.1",
+    "mocha": "^11.7.5",
     "supertest": "^4.0.2"
   }
 }
