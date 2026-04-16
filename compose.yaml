@@ -13,8 +13,17 @@ services:
       context: .
     environment:
       NODE_ENV: production
+      dbport: mysql
+      dbpwd_FILE: /run/secrets/db_root_password
+      dbuser: root
+      dbname: howardTemp
+      dbhost: db
+    networks:
+      - my-tier
     ports:
       - 3000:3000
+    secrets:
+      - db_root_password
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
@@ -22,9 +31,24 @@ services:
 # database data between container restarts. The `db-password` secret is used
 # to set the database password. You must create `db/password.txt` and add
 # a password of your choosing to it before running `docker-compose up`.
-#     depends_on:
-#       db:
-#         condition: service_healthy
+    depends_on:
+      - db
+#        condition: service_healthy
+# Use root/example as user/password credentials
+
+#services:
+
+  db:
+    image: mysql:lts
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - my-tier
+    secrets:
+      - db_root_password
 #   db:
 #     image: postgres
 #     restart: always
@@ -43,9 +67,11 @@ services:
 #       interval: 10s
 #       timeout: 5s
 #       retries: 5
-# volumes:
-#   db-data:
-# secrets:
-#   db-password:
-#     file: db/password.txt
+volumes:
+   mysql-data:
+secrets:
+   db_root_password:
+     file: db/db_root_password.txt
+networks:
+    my-tier:
 

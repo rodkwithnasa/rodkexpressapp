@@ -2,7 +2,9 @@ import express from 'express';
 const app = express()
 import sensorVal from './sensorval.js';
 import mysql from 'mysql2/promise';
+import fs from 'node:fs';
 // const ini = require('ini');
+const dbPassword = fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
 
 var connection;
 var myLogger = function (req, res, next) {
@@ -30,9 +32,9 @@ app.get('/', function (req, res) {
 app.get('/temp', function (req, res) {
     console.log(`query param: ${req.query.q}`)
       mysql.createConnection({
-    host: 'localhost',
+    host: process.env.dbhost,
     user: process.env.dbuser,
-    password: process.env.dbpwd,
+    password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport
   }).then(function(conn){
@@ -74,9 +76,9 @@ app.post('/profile', function (req, res, next) {
 //  var config = ini.parse(process.env.npm_config_key);
   
   mysql.createConnection({
-    host: 'localhost',
+    host: process.env.dbhost,
     user: process.env.dbuser,
-    password: process.env.dbpwd,
+    password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport,
   }).then(function(conn){
@@ -110,9 +112,9 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
   mysensorVal.logValue();
   var connection;
   mysql.createConnection({
-    host: 'localhost',
+    host: process.env.dbhost,
     user: process.env.dbuser,
-    password: process.env.dbpwd,
+    password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport,
   }).then(function(conn){
@@ -122,6 +124,8 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
   }).then(function(rows){
     console.log(rows);
+    const [{insertId}] = rows;
+	res.send(`Id: ${insertId} Sensor: ${mysensorVal.getSensor()} Temp: ${mysensorVal.gettempval()} Door: ${mysensorVal.getdoorstate()}`);
     connection.end();
   }).catch(function(error){
     if (connection?.end) connection.end();
@@ -130,7 +134,6 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
     res.status(500)
     res.send('not ok')    
   });
-  res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 })
 
 export const server = app.listen(3000, () => {
