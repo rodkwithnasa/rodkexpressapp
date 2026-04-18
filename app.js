@@ -9,7 +9,7 @@ const dbPassword = fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
 var connection;
 var myLogger = function (req, res, next) {
   console.log('LOGGED');
-//  console.log(process.env.dbpwd);
+//  console.log(`Password:${dbPassword}`);
   next()
 }
 

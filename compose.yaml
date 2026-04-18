@@ -32,8 +32,9 @@ services:
 # to set the database password. You must create `db/password.txt` and add
 # a password of your choosing to it before running `docker-compose up`.
     depends_on:
-      - db
-#        condition: service_healthy
+      db:
+        condition: service_healthy
+    command: ['npm', 'start']
 # Use root/example as user/password credentials
 
 #services:
@@ -49,6 +50,10 @@ services:
       - my-tier
     secrets:
       - db_root_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", '-p$$(<"$$MYSQL_ROOT_PASSWORD_FILE")']
+      timeout: 20s
+      retries: 10
 #   db:
 #     image: postgres
 #     restart: always
@@ -67,6 +72,32 @@ services:
 #       interval: 10s
 #       timeout: 5s
 #       retries: 5
+  app-test2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    container_name: todoapp-test2
+    environment:
+      NODE_ENV: test
+      dbport: mysql
+      dbpwd_FILE: /run/secrets/db_root_password
+      dbuser: root
+      dbname: howardTemp
+      dbhost: db
+    networks:
+      - my-tier
+    ports:
+      - 3000:3000
+    secrets:
+      - db_root_password
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ['npm', 'test']
+    profiles:
+      - test
+
 volumes:
    mysql-data:
 secrets:

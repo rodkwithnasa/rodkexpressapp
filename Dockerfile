@@ -36,3 +36,21 @@ EXPOSE 3000
 
 # Run the application.
 CMD npm start
+
+# ==============================================
+# Test Stage
+# ==============================================
+FROM node:${NODE_VERSION}-alpine AS test
+
+# Set environment
+ENV NODE_ENV=test \
+    CI=true
+WORKDIR /usr/src/app
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci
+USER node
+COPY . .
+EXPOSE 3000
+#CMD npm test

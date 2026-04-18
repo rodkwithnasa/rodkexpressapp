@@ -1,5 +1,5 @@
 {
-  "sensor": "424243",
-  "tempval": "29.2",
-  "doorstate": "0"
+  "sensor": "12345",
+  "tempval": "18",
+  "doorstate": "open"
 }
