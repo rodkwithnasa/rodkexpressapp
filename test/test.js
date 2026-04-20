@@ -1,7 +1,7 @@
 import request from 'supertest';
 import assert from 'assert';
 import app from '../app.js';
-import sensorinstance from '../sensorinstance.json' with { type: "json" };
+import sensorinstance from './sensorinstance.json' with { type: "json" };
 import { createHttpTerminator } from 'http-terminator';
 import { server } from '../app.js';
 const httpTerminator = createHttpTerminator({ server })
