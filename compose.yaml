@@ -83,7 +83,7 @@ services:
       dbport: mysql
       dbpwd_FILE: /run/secrets/db_root_password
       dbuser: root
-      dbname: howardTemp
+      dbname: howardTestTemp
       dbhost: db
     networks:
       - my-tier
