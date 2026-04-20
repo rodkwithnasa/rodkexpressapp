@@ -8,10 +8,10 @@
 
 ARG NODE_VERSION=24.12.0
 
-FROM node:${NODE_VERSION}-alpine
+FROM node:${NODE_VERSION}-alpine AS production
 
 # Use production node environment by default.
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 
 WORKDIR /usr/src/app
@@ -28,14 +28,14 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Run the application as a non-root user.
 USER node
 
-# Copy the rest of the source files into the image.
-COPY . .
+# Copy the rest of the source files into the image (minus test - not required for prod)
+COPY --exclude=test/ . .
 
 # Expose the port that the application listens on.
 EXPOSE 3000
 
 # Run the application.
-CMD npm start
+CMD ["npm", "start"]
 
 # ==============================================
 # Test Stage
