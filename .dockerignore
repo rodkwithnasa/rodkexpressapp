@@ -31,4 +31,5 @@
 **/build
 **/dist
 LICENSE
-README.md
+README*.md
+**/db

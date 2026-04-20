@@ -7,7 +7,7 @@
   "scripts": {
     "test": "mocha",
     "proxy": "~/cloud-sql-proxy crucial-garden-217908:us-central1:howardinstance",
-    "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 --get-server-public-key < databaseCreate.txt",
+    "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 --get-server-public-key < db/databaseCreate.txt",
     "start": "node app.js"
   },
   "author": "Howard",
