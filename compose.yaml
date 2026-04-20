@@ -13,6 +13,9 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
+      args:
+        VERSION: ${VERSION}
+    image: rodkwithnasa/${COMPOSE_PROJECT_NAME}-server:${VERSION}
     environment:
       NODE_ENV: production
       dbport: mysql
