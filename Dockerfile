@@ -53,4 +53,6 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 USER node
 COPY . .
 EXPOSE 3000
-#CMD npm test
+
+# Test the application
+CMD ["npm", "test"]
