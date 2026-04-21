@@ -82,7 +82,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: test
-    container_name: todoapp-test2
+    container_name: app-test2
     environment:
       NODE_ENV: test
       dbport: mysql
