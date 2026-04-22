@@ -12,7 +12,7 @@ const httpTerminator = createHttpTerminator({ server })
 describe('POST /profile', function() {
   it('responds with json', function(done) {
 debugger;  
-  return request(app)
+      request(app)
       .post('/profile')
       .send(sensorinstance)
       .set('Content-Type', 'application/json')
@@ -41,6 +41,6 @@ debugger;
       })
   });
   after('close server', function () {
-//    httpTerminator.terminate()
+    httpTerminator.terminate()
   })
 });
