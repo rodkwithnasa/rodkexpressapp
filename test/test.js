@@ -3,8 +3,9 @@ const assert = require('assert');
 const app = require('../app.js');
 const sensorinstance = require('./sensorinstance.json');
 const { createHttpTerminator } = require('http-terminator');
-//const server  = app.server;
-//const httpTerminator = createHttpTerminator({ server })
+debugger;
+const server  = app.server;
+const httpTerminator = createHttpTerminator({ server })
 
 
 //debugger;
