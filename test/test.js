@@ -1,17 +1,18 @@
-import request from 'supertest';
-import assert from 'assert';
-import app from '../app.js';
-import sensorinstance from './sensorinstance.json' with { type: "json" };
-import { createHttpTerminator } from 'http-terminator';
-import { server } from '../app.js';
+const request = require('supertest');
+const assert = require('assert');
+const app = require('../app.js');
+const sensorinstance = require('./sensorinstance.json');
+const { createHttpTerminator } = require('http-terminator');
+debugger;
+const server  = app.server;
 const httpTerminator = createHttpTerminator({ server })
 
 
-
+//debugger;
 describe('POST /profile', function() {
   it('responds with json', function(done) {
-debugger;
-    /*return*/ request(app)
+debugger;  
+      request(app)
       .post('/profile')
       .send(sensorinstance)
       .set('Content-Type', 'application/json')

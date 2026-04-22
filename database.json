@@ -1,0 +1,19 @@
+{
+	"prod": {
+		"driver": "mysql",
+		"user": {"ENV": "dbuser"},
+		"password": {"ENV": "dbpwd"},
+		"host": {"ENV": "dbhost"},
+		"database": {"ENV": "dbname"},
+		"port": {"ENV": "dbport"}
+	},
+	"test": {
+		"driver": "mysql",
+		"user": {"ENV": "dbuser"},
+		"password":  {"ENV": "dbpwd"},
+		"host": {"ENV": "dbhost"},
+		"database": {"ENV": "dbname"},
+		"port": {"ENV": "dbport"}
+	}
+
+}

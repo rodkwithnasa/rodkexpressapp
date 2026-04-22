@@ -1,15 +1,16 @@
-import express from 'express';
-const app = express()
-import sensorVal from './sensorval.js';
-import mysql from 'mysql2/promise';
-import fs from 'node:fs';
+const express = require('express');
+const app = express();
+const sensorVal = require('./sensorval.js');
+const mysql = require('mysql2/promise');
+const fs = require('node:fs');
 // const ini = require('ini');
-const dbPassword = process.env.dbpwd ? process.env.dbwd : fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
+
+const dbPassword = process.env.dbpwd ? process.env.dbpwd : fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
 
 var connection;
 var myLogger = function (req, res, next) {
   console.log('LOGGED');
-//  console.log(`Password:${dbPassword}`);
+//  console.log(`Password:${dbPassword}, dbpwd:${process.env.dbpwd}`);
   next()
 }
 
@@ -63,7 +64,7 @@ app.use('/user/:id', function (req, res, next) {
   next()
 })
 */
-import bodyParser from 'body-parser';
+const bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // for parsing application/json
 
@@ -136,9 +137,10 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
   });
 })
 
-export const server = app.listen(3000, () => {
+module.exports  = app;
+module.exports.server = app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
 });
 
-export default app;
+
 
