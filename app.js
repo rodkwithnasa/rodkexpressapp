@@ -4,7 +4,7 @@ import sensorVal from './sensorval.js';
 import mysql from 'mysql2/promise';
 import fs from 'node:fs';
 // const ini = require('ini');
-const dbPassword = process.env.dbpwd ? process.env.dbwd : fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
+const dbPassword = process.env.dbpwd ? process.env.dbpwd : fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
 
 var connection;
 var myLogger = function (req, res, next) {
