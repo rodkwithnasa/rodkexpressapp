@@ -10,6 +10,7 @@ const httpTerminator = createHttpTerminator({ server })
 
 describe('POST /profile', function() {
   it('responds with json', function(done) {
+debugger;
     /*return*/ request(app)
       .post('/profile')
       .send(sensorinstance)
