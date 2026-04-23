@@ -21,6 +21,7 @@ services:
       dbport: mysql
       dbpwd_FILE: /run/secrets/db_root_password
       dbuser: root
+      dbpwd: ${dbpwd}
       dbname: howardTemp
       dbhost: db
     networks:
