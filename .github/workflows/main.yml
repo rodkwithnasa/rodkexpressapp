@@ -11,7 +11,7 @@ jobs:
   test:
     name: Run Node.js Tests
     runs-on: ubuntu-latest
-
+    container: node:lts
     services:
       mysqldb:
         image: mysql:lts
