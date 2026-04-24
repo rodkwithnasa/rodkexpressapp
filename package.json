@@ -4,9 +4,9 @@
   "description": "test of express",
   "main": "app.js",
   "scripts": {
-    "pretest": "db-migrate up --env test",
+    "pretest": "node node_modules/db-migrate/bin/db-migrate up --env test",
     "test": "mocha",
-    "posttest": "db-migrate down --env test",
+    "posttest": "node node_modules/db-migrate/bin/db-migrate down --env test",
     "proxy": "~/cloud-sql-proxy crucial-garden-217908:us-central1:howardinstance",
     "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 --get-server-public-key < db/databaseCreate.txt",
     "dbcreate:test": "mysql -u root -p --host 127.0.0.1 --port 3306 --get-server-public-key < db/testDatabaseCreate.txt",
