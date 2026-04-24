@@ -56,16 +56,23 @@ jobs:
 
       - name: Run tests inside container
         run: |
-          docker run --rm \
-            -e NODE_ENV=test \
-            -e dbport=3306 \
-            -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
-            -e dbuser=${{ secrets.MYSQL_USER }} \
-            -e dbname=${{ secrets.MYSQL_DATABASE }} \
-            -e dbhost=mysqldb \
-            rodkexpressapp:latest
+            npm test
+#          docker run --rm \
+#           -e NODE_ENV=test \
+#            -e dbport=3306 \
+#            -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
+#            -e dbuser=${{ secrets.MYSQL_USER }} \
+#            -e dbname=${{ secrets.MYSQL_DATABASE }} \
+#            -e dbhost=mysqldb \
+#            rodkexpressapp:latest
         env:
           CI: true
+          NODE_ENV: test
+          dbport: 3306
+          dbpwd: ${{ secrets.MYSQL_PASSWORD }}
+          dbuser: ${{ secrets.MYSQL_USER }}
+          dbname: ${{ secrets.MYSQL_DATABASE }}
+          dbhost: mysqldb
         timeout-minutes: 10
 
   build-and-push:
