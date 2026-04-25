@@ -1,4 +1,4 @@
-name: CI/CD - Node.js Application with Docker
+name: CI/CD - Node.js Application with Docker (goback2)
 
 on:
   push:
