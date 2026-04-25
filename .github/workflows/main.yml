@@ -11,9 +11,9 @@ jobs:
   test:
     name: Run Node.js Tests
     runs-on: ubuntu-latest
-
+    container: node:lts
     services:
-      db:
+      mysqldb:
         image: mysql:lts
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -21,6 +21,10 @@ jobs:
           MYSQL_USER: ${{ secrets.MYSQL_USER }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
         ports:
           - 3306:3306
@@ -64,6 +68,12 @@ jobs:
             rodkexpressapp:latest
         env:
           CI: true
+          NODE_ENV: test
+          dbport: 3306
+          dbpwd: ${{ secrets.MYSQL_PASSWORD }}
+          dbuser: ${{ secrets.MYSQL_USER }}
+          dbname: ${{ secrets.MYSQL_DATABASE }}
+          dbhost: mysqldb
         timeout-minutes: 10
 
   build-and-push:
