@@ -1,4 +1,5 @@
-name: CI/CD - Node.js Application with Docker (modified)
+
+name: CI/CD - Node.js Application with Docker (goback2)
 
 on:
   push:
@@ -56,7 +57,7 @@ jobs:
       - name: Run tests inside container
         run: |
         docker run --rm \
-            --network $NETWORK \
+            --network host \
             -e NODE_ENV=test \
             -e dbport=3306 \
             -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
@@ -72,7 +73,7 @@ jobs:
           dbuser: ${{ secrets.MYSQL_USER }}
           dbname: ${{ secrets.MYSQL_DATABASE }}
           dbhost: mysqldb
-          NETWORK: $(docker network ls --filter name=github_network --format "{{.Name}}")
+#          NETWORK: $(docker network ls --filter name=github_network --format "{{.Name}}")
         timeout-minutes: 10
 
   build-and-push:
