@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      db:
+      mysqldb:
         image: mysql:lts
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -21,6 +21,10 @@ jobs:
           MYSQL_USER: ${{ secrets.MYSQL_USER }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
         ports:
           - 3306:3306
@@ -53,13 +57,12 @@ jobs:
       - name: Run tests inside container
         run: |
           docker run --rm \
-            --network host \
             -e NODE_ENV=test \
             -e dbport=3306 \
             -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
             -e dbuser=${{ secrets.MYSQL_USER }} \
             -e dbname=${{ secrets.MYSQL_DATABASE }} \
-            -e dbhost=db \
+            -e dbhost=mysqldb \
             rodkexpressapp:latest
         env:
           CI: true
