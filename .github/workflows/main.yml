@@ -56,15 +56,16 @@ jobs:
 
       - name: Run tests inside container
         run: |
-            npm test
-#          docker run --rm \
-#           -e NODE_ENV=test \
-#            -e dbport=3306 \
-#            -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
-#            -e dbuser=${{ secrets.MYSQL_USER }} \
-#            -e dbname=${{ secrets.MYSQL_DATABASE }} \
-#            -e dbhost=mysqldb \
-#            rodkexpressapp:latest
+        NETWORK=$(docker network ls --filter name=github_network --format "{{.Name}}")
+        docker run --rm \
+            --network $NETWORK \
+            -e NODE_ENV=test \
+            -e dbport=3306 \
+            -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
+            -e dbuser=${{ secrets.MYSQL_USER }} \
+            -e dbname=${{ secrets.MYSQL_DATABASE }} \
+            -e dbhost=db \
+            rodkexpressapp:latest
         env:
           CI: true
           NODE_ENV: test
