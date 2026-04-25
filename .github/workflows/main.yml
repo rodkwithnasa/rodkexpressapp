@@ -55,7 +55,6 @@ jobs:
 
       - name: Run tests inside container
         run: |
-        NETWORK=$(docker network ls --filter name=github_network --format "{{.Name}}")
         docker run --rm \
             --network $NETWORK \
             -e NODE_ENV=test \
@@ -73,6 +72,7 @@ jobs:
           dbuser: ${{ secrets.MYSQL_USER }}
           dbname: ${{ secrets.MYSQL_DATABASE }}
           dbhost: mysqldb
+          NETWORK: $(docker network ls --filter name=github_network --format "{{.Name}}")
         timeout-minutes: 10
 
   build-and-push:
