@@ -1,5 +1,4 @@
-
-name: CI/CD - Node.js Application with Docker (goback2)
+name: CI/CD - Node.js Application with Docker
 
 on:
   push:
@@ -12,8 +11,9 @@ jobs:
   test:
     name: Run Node.js Tests
     runs-on: ubuntu-latest
+
     services:
-      mysqldb:
+      db:
         image: mysql:lts
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -21,10 +21,6 @@ jobs:
           MYSQL_USER: ${{ secrets.MYSQL_USER }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
 
         ports:
           - 3306:3306
@@ -56,7 +52,7 @@ jobs:
 
       - name: Run tests inside container
         run: |
-        docker run --rm \
+          docker run --rm \
             --network host \
             -e NODE_ENV=test \
             -e dbport=3306 \
@@ -67,13 +63,6 @@ jobs:
             rodkexpressapp:latest
         env:
           CI: true
-          NODE_ENV: test
-          dbport: 3306
-          dbpwd: ${{ secrets.MYSQL_PASSWORD }}
-          dbuser: ${{ secrets.MYSQL_USER }}
-          dbname: ${{ secrets.MYSQL_DATABASE }}
-          dbhost: mysqldb
-#          NETWORK: $(docker network ls --filter name=github_network --format "{{.Name}}")
         timeout-minutes: 10
 
   build-and-push:
