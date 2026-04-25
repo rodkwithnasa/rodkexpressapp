@@ -57,13 +57,13 @@ jobs:
       - name: Run tests inside container
         run: |
           docker run --rm \
-            --network github_network_${{ github.run_id }}
+            --network host \
             -e NODE_ENV=test \
             -e dbport=3306 \
             -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
             -e dbuser=${{ secrets.MYSQL_USER }} \
             -e dbname=${{ secrets.MYSQL_DATABASE }} \
-            -e dbhost=mysqldb \
+            -e dbhost=localhost \
             rodkexpressapp:latest
         env:
           CI: true
