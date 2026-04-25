@@ -57,6 +57,7 @@ jobs:
       - name: Run tests inside container
         run: |
           docker run --rm \
+            --network github_network_${{ github.run_id }}
             -e NODE_ENV=test \
             -e dbport=3306 \
             -e dbpwd=${{ secrets.MYSQL_PASSWORD }} \
