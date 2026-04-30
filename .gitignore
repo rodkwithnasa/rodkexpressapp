@@ -4,3 +4,4 @@ tmp/
 _site/
 node_modules/
 db/
+.nyc_output/

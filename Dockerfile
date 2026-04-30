@@ -46,12 +46,24 @@ FROM node:${NODE_VERSION}-alpine AS test
 ENV NODE_ENV=test \
     CI=true
 WORKDIR /usr/src/app
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs && \
+    chown -R nodejs:nodejs /usr/src/app
+	
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
     npm ci
-USER node
-COPY . .
+
+COPY --chown=nodejs:nodejs . .
+
+# Set proper ownership
+#RUN chown -R nodejs:nodejs /usr/src/app
+
+USER nodejs
+
 EXPOSE 3000
 
 # Test the application

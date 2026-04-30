@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "pretest": "node node_modules/db-migrate/bin/db-migrate up --env test",
-    "test": "mocha",
+    "test": "nyc mocha",
     "posttest": "node node_modules/db-migrate/bin/db-migrate down --env test",
     "proxy": "~/cloud-sql-proxy crucial-garden-217908:us-central1:howardinstance",
     "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 --get-server-public-key < db/databaseCreate.txt",
@@ -28,6 +28,7 @@
   "devDependencies": {
     "http-terminator": "^3.2.0",
     "mocha": "^11.7.5",
+    "nyc": "^18.0.0",
     "supertest": "^7.2.2"
   }
 }
