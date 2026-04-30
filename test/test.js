@@ -7,7 +7,7 @@ debugger;
 const server  = app.server;
 const httpTerminator = createHttpTerminator({ server })
 
-
+describe('rodkexpressapp routes', function() {
 //debugger;
 describe('POST /profile', function() {
 
@@ -21,21 +21,22 @@ debugger;
       .expect(200,/\{\s*\"insertId\"\:\s*\d*\s*\}/)
       .expect('Content-Type', 'application/json; charset=utf-8')
       .end(function(err,res) {
-        if (err) {console.log(`Failure, err:${err}`); done(err)}
-        console.log(`Success: ${JSON.stringify(res)}`);
+        if (err) {/* console.log(`Failure, err:${err}`);*/ done(err)}
+//        console.log(`Success: ${JSON.stringify(res)}`);
         done()
       });
     
     
   });
+});
   describe('GET /temp?q=id', function () {
       it('responds with temperature on id 1 (inserted in post)', function(done) {
           request(app)
           .get('/temp?q=1')          
           .expect(200)
           .end(function(err,res) {
-            if (err) {console.log(`Failure, err:${err}`); done(err)}
-            console.log(`Success: ${JSON.stringify(res)}`)
+            if (err) {/*console.log(`Failure, err:${err}`);*/ done(err)}
+//            console.log(`Success: ${JSON.stringify(res)}`)
             assert.equal(res.text,`{"readingValue":"${sensorinstance.tempval}"}`)
             done()              
           })
@@ -80,11 +81,11 @@ debugger;
 	after('close server', function (done) {
     httpTerminator.terminate()
 	.then((res)=>{
-		console.log(`Terminate(then):${res}`);
+//		console.log(`Terminate(then):${res}`);
 		done();
 	})
 	.catch((err)=>{
-		console.error(`Terminate (catch):${err}`);
+//		console.error(`Terminate (catch):${err}`);
 		done(err);
 	});
   });
