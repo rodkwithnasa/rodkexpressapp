@@ -6,6 +6,9 @@ const { createHttpTerminator } = require('http-terminator');
 debugger;
 const server  = app.server;
 const httpTerminator = createHttpTerminator({ server })
+const DBMigrate = require('db-migrate');
+const dbmigrate = DBMigrate.getInstance(true,{"env": "test",cmdOptions:{"verbose":false}});
+//console.log(`dbmigrate instance ${JSON.stringify(dbmigrate)}`);
 
 describe('rodkexpressapp routes', function() {
 //debugger;
@@ -67,12 +70,30 @@ debugger;
 	});
   });
   describe('GET /sensor/:sensid/temp/:tempVal/door/:doorState', function() {
+
+	afterEach('reset all migrations', function() {
+		return dbmigrate.reset();
+	});
+
 	  it('responds with text and insert id',function() {
 		  return request(app)
 		  .get(`/sensor/${sensorinstance.sensor}/temp/${sensorinstance.tempval}/door/${sensorinstance.doorstate}`)
 		  .expect(200,/^Id: \d+ Sensor: 12345 Temp: 18 Door: open$/)
 		  .expect('Content-Type','text/html; charset=utf-8')
 		  .expect('Content-Length', '39').then(res => {
+//		  .end(function(err,res) {
+//			  if (err) {done(err)};
+//			  done();
+		  });
+	  });
+		  
+	  
+	  it('fails to insert when no db',function() {
+		  return request(app)
+		  .get(`/sensor/${sensorinstance.sensor}/temp/${sensorinstance.tempval}/door/${sensorinstance.doorstate}`)
+		  .expect(500).then(res => {
+//		  .expect('Content-Type','text/html; charset=utf-8')
+//		  .expect('Content-Length', '39').then(res => {
 //		  .end(function(err,res) {
 //			  if (err) {done(err)};
 //			  done();
