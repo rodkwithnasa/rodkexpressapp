@@ -34,6 +34,7 @@ debugger;
           request(app)
           .get('/temp?q=1')          
           .expect(200)
+		  .expect('Content-Type', 'application/json; charset=utf-8')
           .end(function(err,res) {
             if (err) {/*console.log(`Failure, err:${err}`);*/ done(err)}
 //            console.log(`Success: ${JSON.stringify(res)}`)
@@ -41,13 +42,14 @@ debugger;
             done()              
           })
       })
-	  it('responds with Not OK on out of range id', function(done) {
+	  it('responds with empty object on out of range id', function(done) {
 		  request(app)
 		  .get('/temp?q=2')
-		  .expect(500)
+		  .expect(200,/\{\}/)
+		  .expect('Content-Type', 'application/json; charset=utf-8')
 		  .end(function(err,res) {
 			  if (err) {done(err)}
-			  assert.equal(res.text, 'not ok')
+//			  assert.equal(res.text, '{}')
 			  done()
 		  });
 	  });

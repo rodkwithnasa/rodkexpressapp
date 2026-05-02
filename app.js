@@ -44,8 +44,11 @@ app.get('/temp', function (req, res) {
     return connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
   }).then(function(rows){
 //    console.log(rows);
-    const {readingValue} = rows[0][0]
-    const myResponse = {'readingValue':readingValue}
+    let myResponse = {};
+	if (rows[0].length > 0) {
+		const {readingValue} = rows[0][0]
+		myResponse.readingValue = readingValue;
+	}
     res.json(myResponse)
     connection.end();
   }).catch(function(error){
@@ -72,7 +75,7 @@ app.post('/profile', function (req, res, next) {
 //  console.log(req.body);
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
-//  mysensorVal.logValue();
+  mysensorVal.logValue();
 
 //  var config = ini.parse(process.env.npm_config_key);
   
@@ -110,7 +113,7 @@ app.post('/profile', function (req, res, next) {
 app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, next) {
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
-//  mysensorVal.logValue();
+  mysensorVal.logValue();
   var connection;
   mysql.createConnection({
     host: process.env.dbhost,
