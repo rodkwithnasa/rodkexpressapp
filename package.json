@@ -4,7 +4,7 @@
   "description": "test of express",
   "main": "app.js",
   "scripts": {
-    "pretest": "node node_modules/db-migrate/bin/db-migrate up --env test",
+    "pretest": "node node_modules/db-migrate/bin/db-migrate reset --env test && node node_modules/db-migrate/bin/db-migrate up --env test",
     "test": "nyc mocha",
     "posttest": "node node_modules/db-migrate/bin/db-migrate down --env test",
     "proxy": "~/cloud-sql-proxy crucial-garden-217908:us-central1:howardinstance",
