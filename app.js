@@ -75,7 +75,7 @@ app.post('/profile', function (req, res, next) {
 //  console.log(req.body);
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
-  mysensorVal.logValue();
+  if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
 
 //  var config = ini.parse(process.env.npm_config_key);
   

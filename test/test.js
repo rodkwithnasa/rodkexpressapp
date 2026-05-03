@@ -101,15 +101,15 @@ debugger;
 	  });
   });
 		  
-	after('close server', function (done) {
-    httpTerminator.terminate()
+	after('close server', function() {
+    return httpTerminator.terminate()
 	.then((res)=>{
 //		console.log(`Terminate(then):${res}`);
-		done();
+//		done();
 	})
 	.catch((err)=>{
 //		console.error(`Terminate (catch):${err}`);
-		done(err);
+//		done(err);
 	});
   });
 });
