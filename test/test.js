@@ -33,7 +33,16 @@ debugger;
   });
 });
   describe('GET /temp?q=id', function () {
-      it('responds with temperature on id 1 (inserted in post)', function() {
+	  before('initialise DB', function () {
+		  return dbmigrate.reset().then(function(res){
+			  return dbmigrate.up();
+		  }).catch(function(err){
+			  console.error(err);
+			  return;
+		  });
+	  });
+		  
+      it('responds with temperature on id 1', function() {
           return request(app)
           .get('/temp?q=1')          
           .expect(200)
@@ -56,6 +65,19 @@ debugger;
 //			  done()
 		  });
 	  });
+	  describe('error state test',function(){		  
+		  before('reset all migrations', function() {
+			return dbmigrate.reset();
+		  });
+		  it('fails to insert when no db',function() {
+			  return request(app)
+			  .get('/temp?q=2')
+			  .expect(500).then(res => {
+			  });
+		  });
+	  });
+	  
+	  
   });
   describe('GET /', function () {
 	it('responds with Hello World',function() {
@@ -70,6 +92,9 @@ debugger;
 	});
   });
   describe('GET /sensor/:sensid/temp/:tempVal/door/:doorState', function() {
+	  before('setup db',function() {
+		  return dbmigrate.up();
+	  });
 
 	afterEach('reset all migrations', function() {
 		return dbmigrate.reset();

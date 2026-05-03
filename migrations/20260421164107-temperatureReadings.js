@@ -1,4 +1,5 @@
 'use strict';
+const sensorinstance = require('../test/sensorinstance.json');
 
 var dbm;
 var type;
@@ -23,7 +24,14 @@ exports.up = function(db) {
 		'openClosed': {'type': 'string', 'length': 20 }
 	},
 	'ifNotExists': true
-  });
+  }).then(function(res){
+			  return db.insert('temperatureReadings',['deviceIdentity','readingValue','openClosed'],Object.values(sensorinstance));
+		  }).then(function(res){
+//			  console.log(`In migration after insert, res: ${res}`);
+		  }).catch( function(err){
+			  console.error(`in migration err: ${err}`);
+			  return;
+		  });
 };
 
 exports.down = function(db) {
