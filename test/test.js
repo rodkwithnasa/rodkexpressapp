@@ -31,6 +31,23 @@ debugger;
 */    
     
   });
+
+	  describe('error state test',function(){		  
+		  before('reset all migrations', function() {
+			return dbmigrate.reset();
+		  });
+		  it('fails to insert when no db',function() {
+			  return request(app)
+			  .post('/profile')
+			  .send(sensorinstance)
+			  .set('Content-Type', 'application/json')
+			  .set('Accept','application/json')
+			  .expect(500).then(res => {
+			  });
+		  });
+	  });
+
+
 });
   describe('GET /temp?q=id', function () {
 	  before('initialise DB', function () {
