@@ -9,7 +9,7 @@ const dbPassword = process.env.dbpwd ? process.env.dbpwd : fs.readFileSync(proce
 
 var connection;
 var myLogger = function (req, res, next) {
-  console.log('LOGGED');
+//  console.log('LOGGED');
 //  console.log(`Password:${dbPassword}, dbpwd:${process.env.dbpwd}`);
   next()
 }
@@ -31,7 +31,7 @@ app.get('/', function (req, res) {
 })
 
 app.get('/temp', function (req, res) {
-    console.log(`query param: ${req.query.q}`)
+//    console.log(`query param: ${req.query.q}`)
       mysql.createConnection({
     host: process.env.dbhost,
     user: process.env.dbuser,
@@ -43,15 +43,18 @@ app.get('/temp', function (req, res) {
     connection = conn;
     return connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
   }).then(function(rows){
-    console.log(rows);
-    const {readingValue} = rows[0][0]
-    const myResponse = {'readingValue':readingValue}
+//    console.log(rows);
+    let myResponse = {};
+	if (rows[0].length > 0) {
+		const {readingValue} = rows[0][0]
+		myResponse.readingValue = readingValue;
+	}
     res.json(myResponse)
     connection.end();
   }).catch(function(error){
     if (connection?.end) connection.end();
     //logs out the error
-    console.log(error);
+//    console.log(error);
     res.status(500)
     res.send('not ok')
   })
@@ -69,10 +72,10 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json()); // for parsing application/json
 
 app.post('/profile', function (req, res, next) {
-  console.log(req.body);
-  console.log('Request time: ', req.requestTime)
+//  console.log(req.body);
+//  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
-  mysensorVal.logValue();
+  if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
 
 //  var config = ini.parse(process.env.npm_config_key);
   
@@ -85,12 +88,12 @@ app.post('/profile', function (req, res, next) {
   }).then(function(conn){
     // do stuff with conn
     connection = conn;
-    console.log('In profile connection before insert')
+//    console.log('In profile connection before insert')
     return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
   }).then(function(rows){
-    console.log('in reponse to query insertion')
-    console.log(rows);
+//    console.log('in reponse to query insertion')
+//    console.log(rows);
     const [{insertId}] = rows
     const myResponse = {'insertId':insertId}
     res.json(myResponse)
@@ -98,7 +101,7 @@ app.post('/profile', function (req, res, next) {
   }).catch(function(error){
     if (connection?.end) connection.end();
     //logs out the error
-    console.log(error);
+//    console.log(error);
     res.status(500)
     res.send('not ok')
   });
@@ -108,7 +111,7 @@ app.post('/profile', function (req, res, next) {
 });
 
 app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, next) {
-  console.log('Request time: ', req.requestTime)
+//  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
   mysensorVal.logValue();
   var connection;
@@ -124,14 +127,14 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
     return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
   }).then(function(rows){
-    console.log(rows);
+//    console.log(rows);
     const [{insertId}] = rows;
 	res.send(`Id: ${insertId} Sensor: ${mysensorVal.getSensor()} Temp: ${mysensorVal.gettempval()} Door: ${mysensorVal.getdoorstate()}`);
     connection.end();
   }).catch(function(error){
     if (connection?.end) connection.end();
     //logs out the error
-    console.log(error);
+//    console.log(error);
     res.status(500)
     res.send('not ok')    
   });
