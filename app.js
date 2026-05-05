@@ -38,11 +38,11 @@ app.get('/temp', function (req, res) {
     password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport
-  }).then(function(conn){
+  }).then(async function(conn){
     // do stuff with conn
     connection = conn;
-    return connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
-  }).then(function(rows){
+    const rows = await connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
+//  }).then(function(rows){
 //    console.log(rows);
     let myResponse = {};
 	if (rows[0].length > 0) {
@@ -85,13 +85,13 @@ app.post('/profile', function (req, res, next) {
     password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport,
-  }).then(function(conn){
+  }).then(async function(conn){
     // do stuff with conn
     connection = conn;
 //    console.log('In profile connection before insert')
-    return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+    const rows = await connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
-  }).then(function(rows){
+//  }).then(function(rows){
 //    console.log('in reponse to query insertion')
 //    console.log(rows);
     const [{insertId}] = rows
@@ -121,12 +121,12 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
     password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport,
-  }).then(function(conn){
+  }).then(async function(conn){
     // do stuff with conn
     connection = conn;
-    return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+    const rows = await connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
-  }).then(function(rows){
+//  }).then(function(rows){
 //    console.log(rows);
     const [{insertId}] = rows;
 	res.send(`Id: ${insertId} Sensor: ${mysensorVal.getSensor()} Temp: ${mysensorVal.gettempval()} Door: ${mysensorVal.getdoorstate()}`);
