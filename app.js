@@ -32,13 +32,16 @@ app.get('/', function (req, res) {
 
 app.get('/temp', function (req, res) {
 //    console.log(`query param: ${req.query.q}`)
-      mysql.createConnection({
-    host: process.env.dbhost,
-    user: process.env.dbuser,
-    password: dbPassword,
-    database: process.env.dbname,
-    port: process.env.dbport
-  }).then(async function(conn){
+ (async () => {
+  try {
+    const conn = await mysql.createConnection({
+		host: process.env.dbhost,
+		user: process.env.dbuser,
+		password: dbPassword,
+		database: process.env.dbname,
+		port: process.env.dbport
+    })
+//  .then(async function(conn){
     // do stuff with conn
     connection = conn;
     const rows = await connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
@@ -51,13 +54,14 @@ app.get('/temp', function (req, res) {
 	}
     res.json(myResponse)
     connection.end();
-  }).catch(function(error){
+  } catch (error){
     if (connection?.end) connection.end();
     //logs out the error
 //    console.log(error);
     res.status(500)
     res.send('not ok')
-  })
+  }
+ })();
 //    res.send('ok')
 })
 
@@ -79,13 +83,16 @@ app.post('/profile', function (req, res, next) {
 
 //  var config = ini.parse(process.env.npm_config_key);
   
-  mysql.createConnection({
+ (async () => {
+  try {
+    const conn = await  mysql.createConnection({
     host: process.env.dbhost,
     user: process.env.dbuser,
     password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport,
-  }).then(async function(conn){
+  })
+//  .then(async function(conn){
     // do stuff with conn
     connection = conn;
 //    console.log('In profile connection before insert')
@@ -98,13 +105,14 @@ app.post('/profile', function (req, res, next) {
     const myResponse = {'insertId':insertId}
     res.json(myResponse)
     connection.end();
-  }).catch(function(error){
+  } catch(error){
     if (connection?.end) connection.end();
     //logs out the error
 //    console.log(error);
     res.status(500)
     res.send('not ok')
-  });
+  }
+ })();
 
   //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 
@@ -114,14 +122,17 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
   if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
-  var connection;
-  mysql.createConnection({
+//  var connection;
+ (async () => {
+  try {
+    const conn = await  mysql.createConnection({
     host: process.env.dbhost,
     user: process.env.dbuser,
     password: dbPassword,
     database: process.env.dbname,
     port: process.env.dbport,
-  }).then(async function(conn){
+  })
+//  .then(async function(conn){
     // do stuff with conn
     connection = conn;
     const rows = await connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
@@ -131,13 +142,14 @@ app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, nex
     const [{insertId}] = rows;
 	res.send(`Id: ${insertId} Sensor: ${mysensorVal.getSensor()} Temp: ${mysensorVal.gettempval()} Door: ${mysensorVal.getdoorstate()}`);
     connection.end();
-  }).catch(function(error){
+  } catch (error){
     if (connection?.end) connection.end();
     //logs out the error
 //    console.log(error);
     res.status(500)
     res.send('not ok')    
-  });
+  };
+ })();
 })
 
 module.exports  = app;
