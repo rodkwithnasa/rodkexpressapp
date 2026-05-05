@@ -8,6 +8,8 @@ const server  = app.server;
 const httpTerminator = createHttpTerminator({ server })
 const DBMigrate = require('db-migrate');
 const dbmigrate = DBMigrate.getInstance(true,{"env": "test",cmdOptions:{"verbose":false}});
+// Enable silent mode
+dbmigrate.silence(true);
 //console.log(`dbmigrate instance ${JSON.stringify(dbmigrate)}`);
 
 describe('rodkexpressapp routes', function() {
@@ -108,7 +110,7 @@ debugger;
 		});
 	});
   });
-  describe('GET /sensor/:sensid/temp/:tempVal/door/:doorState', function() {
+  describe('GET /sensor/:s/temp/:t/door/:d', function() {
 	  before('setup db',function() {
 		  return dbmigrate.up();
 	  });
@@ -117,7 +119,7 @@ debugger;
 		return dbmigrate.reset();
 	});
 
-	  it('responds with text and insert id',function() {
+	  it('responds with text & insert id',function() {
 		  return request(app)
 		  .get(`/sensor/${sensorinstance.sensor}/temp/${sensorinstance.tempval}/door/${sensorinstance.doorstate}`)
 		  .expect(200,/^Id: \d+ Sensor: 12345 Temp: 18 Door: open$/)
