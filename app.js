@@ -118,7 +118,7 @@ app.post('/profile', function (req, res, next) {
 
 });
 
-app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, next) {
+app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res) {
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
   if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
