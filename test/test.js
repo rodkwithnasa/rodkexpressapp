@@ -45,6 +45,7 @@ debugger;
 			  .set('Content-Type', 'application/json')
 			  .set('Accept','application/json')
 			  .expect(500).then(res => {
+				assert.equal(res.text, 'not ok')
 			  });
 		  });
 	  });
