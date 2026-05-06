@@ -30,9 +30,9 @@ app.get('/', function (req, res) {
   res.send(responseText)
 })
 
-app.get('/temp', function (req, res, next) {
+app.get('/temp', async function (req, res, next) {
 //    console.log(`query param: ${req.query.q}`)
- (async () => {
+// (async () => {
   try {
     const conn = await mysql.createConnection({
 		host: process.env.dbhost,
@@ -62,7 +62,7 @@ app.get('/temp', function (req, res, next) {
     res.send('not ok')
 	next(error);
   }
- })();
+// })();
 //    res.send('ok')
 })
 
