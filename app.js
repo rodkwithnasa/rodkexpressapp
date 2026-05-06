@@ -1,3 +1,4 @@
+'use strict';
 const express = require('express');
 const app = express();
 const sensorVal = require('./sensorval.js');
