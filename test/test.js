@@ -138,6 +138,7 @@ debugger;
 		  return request(app)
 		  .get(`/sensor/${sensorinstance.sensor}/temp/${sensorinstance.tempval}/door/${sensorinstance.doorstate}`)
 		  .expect(500).then(res => {
+				assert.equal(res.text, 'not ok')
 //		  .expect('Content-Type','text/html; charset=utf-8')
 //		  .expect('Content-Length', '39').then(res => {
 //		  .end(function(err,res) {
