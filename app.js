@@ -120,12 +120,12 @@ app.post('/profile', async function (req, res, next) {
 
 });
 
-app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res) {
+app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, res, next) {
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
   if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
 //  var connection;
- (async () => {
+// (async () => {
   try {
     const conn = await  mysql.createConnection({
     host: process.env.dbhost,
@@ -151,7 +151,7 @@ app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res) {
     res.status(500)
     res.send('not ok')    
   };
- })();
+// })();
 })
 
 module.exports  = app;
