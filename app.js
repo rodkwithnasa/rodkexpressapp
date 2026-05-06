@@ -149,7 +149,8 @@ app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, re
     //logs out the error
 //    console.log(error);
     res.status(500)
-    res.send('not ok')    
+    res.send('not ok')
+	next(error);
   };
 // })();
 })
