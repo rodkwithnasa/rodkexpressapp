@@ -30,7 +30,7 @@ app.get('/', function (req, res) {
   res.send(responseText)
 })
 
-app.get('/temp', function (req, res) {
+app.get('/temp', function (req, res, next) {
 //    console.log(`query param: ${req.query.q}`)
  (async () => {
   try {
@@ -57,9 +57,10 @@ app.get('/temp', function (req, res) {
   } catch (error){
     if (connection?.end) connection.end();
     //logs out the error
-//    console.log(error);
+    console.log(`In /temp error: ${error}`);
     res.status(500)
     res.send('not ok')
+	next(error);
   }
  })();
 //    res.send('ok')

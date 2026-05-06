@@ -92,6 +92,7 @@ debugger;
 			  return request(app)
 			  .get('/temp?q=2')
 			  .expect(500).then(res => {
+				assert.equal(res.text, 'not ok')
 			  });
 		  });
 	  });
