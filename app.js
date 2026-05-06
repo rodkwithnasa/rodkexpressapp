@@ -76,7 +76,7 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // for parsing application/json
 
-app.post('/profile', function (req, res, next) {
+app.post('/profile', async function (req, res, next) {
 //  console.log(req.body);
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
@@ -84,7 +84,7 @@ app.post('/profile', function (req, res, next) {
 
 //  var config = ini.parse(process.env.npm_config_key);
   
- (async () => {
+// (async () => {
   try {
     const conn = await  mysql.createConnection({
     host: process.env.dbhost,
@@ -112,8 +112,9 @@ app.post('/profile', function (req, res, next) {
 //    console.log(error);
     res.status(500)
     res.send('not ok')
+	next(error);
   }
- })();
+// })();
 
   //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 
