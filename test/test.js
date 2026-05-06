@@ -149,14 +149,18 @@ debugger;
   });
 		  
 	after('close server', function() {
-    return httpTerminator.terminate()
+    return server.close(() => {
+      console.error('*******HTTP server closed')
+	  app.cp.end((err)=> {console.error('error closing dbpool: ${err}');});
+	  console.error('*******After cp end');
+    }) /* httpTerminator.terminate()
 	.then((res)=>{
-//		console.log(`Terminate(then):${res}`);
+		console.log(`Terminate(then):${res}`);
 //		done();
 	})
 	.catch((err)=>{
-//		console.error(`Terminate (catch):${err}`);
+		console.error(`Terminate (catch):${err}`);
 //		done(err);
-	});
-  });
+	}); */
+  }); 
 });
