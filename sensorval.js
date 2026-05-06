@@ -5,9 +5,10 @@ function sensorval( sensor,tempval,doorstate) {
 }
 
 sensorval.prototype.logValue = function() {
-  console.log('Sensor', this.sensor);
-  console.log('tempval', this.tempval);
-  console.log('doorstate', this.doorstate);
+	console.log(`********Sensor: ${this.sensor} tempval: ${this.tempval} doorstate: ${this.doorstate}`);
+//  console.log('Sensor', this.sensor);
+//  console.log('tempval', this.tempval);
+//  console.log('doorstate', this.doorstate);
   return this;
 }
 

@@ -8,6 +8,8 @@ const server  = app.server;
 const httpTerminator = createHttpTerminator({ server })
 const DBMigrate = require('db-migrate');
 const dbmigrate = DBMigrate.getInstance(true,{"env": "test",cmdOptions:{"verbose":false}});
+// Enable silent mode
+dbmigrate.silence(true);
 //console.log(`dbmigrate instance ${JSON.stringify(dbmigrate)}`);
 
 describe('rodkexpressapp routes', function() {
@@ -43,6 +45,7 @@ debugger;
 			  .set('Content-Type', 'application/json')
 			  .set('Accept','application/json')
 			  .expect(500).then(res => {
+				assert.equal(res.text, 'not ok')
 			  });
 		  });
 	  });
@@ -90,6 +93,7 @@ debugger;
 			  return request(app)
 			  .get('/temp?q=2')
 			  .expect(500).then(res => {
+				assert.equal(res.text, 'not ok')
 			  });
 		  });
 	  });
@@ -108,7 +112,7 @@ debugger;
 		});
 	});
   });
-  describe('GET /sensor/:sensid/temp/:tempVal/door/:doorState', function() {
+  describe('GET /sensor/:s/temp/:t/door/:d', function() {
 	  before('setup db',function() {
 		  return dbmigrate.up();
 	  });
@@ -117,7 +121,7 @@ debugger;
 		return dbmigrate.reset();
 	});
 
-	  it('responds with text and insert id',function() {
+	  it('responds with text & insert id',function() {
 		  return request(app)
 		  .get(`/sensor/${sensorinstance.sensor}/temp/${sensorinstance.tempval}/door/${sensorinstance.doorstate}`)
 		  .expect(200,/^Id: \d+ Sensor: 12345 Temp: 18 Door: open$/)
@@ -134,6 +138,7 @@ debugger;
 		  return request(app)
 		  .get(`/sensor/${sensorinstance.sensor}/temp/${sensorinstance.tempval}/door/${sensorinstance.doorstate}`)
 		  .expect(500).then(res => {
+				assert.equal(res.text, 'not ok')
 //		  .expect('Content-Type','text/html; charset=utf-8')
 //		  .expect('Content-Length', '39').then(res => {
 //		  .end(function(err,res) {
@@ -144,14 +149,18 @@ debugger;
   });
 		  
 	after('close server', function() {
-    return httpTerminator.terminate()
+    return server.close(() => {
+      console.error('*******HTTP server closed')
+	  app.cp.end((err)=> {console.error('error closing dbpool: ${err}');});
+	  console.error('*******After cp end');
+    }) /* httpTerminator.terminate()
 	.then((res)=>{
-//		console.log(`Terminate(then):${res}`);
+		console.log(`Terminate(then):${res}`);
 //		done();
 	})
 	.catch((err)=>{
-//		console.error(`Terminate (catch):${err}`);
+		console.error(`Terminate (catch):${err}`);
 //		done(err);
-	});
-  });
+	}); */
+  }); 
 });

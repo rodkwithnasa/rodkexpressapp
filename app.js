@@ -1,3 +1,4 @@
+'use strict';
 const express = require('express');
 const app = express();
 const sensorVal = require('./sensorval.js');
@@ -6,8 +7,24 @@ const fs = require('node:fs');
 // const ini = require('ini');
 
 const dbPassword = process.env.dbpwd ? process.env.dbpwd : fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
-
-var connection;
+var connectionp;
+(async () => {
+  try {
+	const cp = await mysql.createPool({
+		connectionLimit : 10,
+		host: process.env.dbhost,
+		user: process.env.dbuser,
+		password: dbPassword,
+		database: process.env.dbname,
+		port: process.env.dbport
+    });
+	connectionp = cp;
+  } catch (error) {
+	  throw error;
+  }
+})();
+var conn;
+	
 var myLogger = function (req, res, next) {
 //  console.log('LOGGED');
 //  console.log(`Password:${dbPassword}, dbpwd:${process.env.dbpwd}`);
@@ -30,19 +47,16 @@ app.get('/', function (req, res) {
   res.send(responseText)
 })
 
-app.get('/temp', function (req, res) {
+app.get('/temp', async function (req, res, next) {
 //    console.log(`query param: ${req.query.q}`)
-      mysql.createConnection({
-    host: process.env.dbhost,
-    user: process.env.dbuser,
-    password: dbPassword,
-    database: process.env.dbname,
-    port: process.env.dbport
-  }).then(function(conn){
+// (async () => {
+  try {
+    conn = await connectionp.getConnection();
+//  .then(async function(conn){
     // do stuff with conn
-    connection = conn;
-    return connection.query(`select * FROM temperatureReadings where id=${req.query.q};`)
-  }).then(function(rows){
+//    connection = conn;
+    const rows = await conn.query(`select * FROM temperatureReadings where id=${req.query.q};`)
+//  }).then(function(rows){
 //    console.log(rows);
     let myResponse = {};
 	if (rows[0].length > 0) {
@@ -50,14 +64,16 @@ app.get('/temp', function (req, res) {
 		myResponse.readingValue = readingValue;
 	}
     res.json(myResponse)
-    connection.end();
-  }).catch(function(error){
-    if (connection?.end) connection.end();
+    conn.release();
+  } catch (error){
+    conn?.release();
     //logs out the error
-//    console.log(error);
+    console.log(`***In /temp error: ${error}`);
     res.status(500)
     res.send('not ok')
-  })
+	next(error);
+  }
+// })();
 //    res.send('ok')
 })
 
@@ -71,7 +87,7 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // for parsing application/json
 
-app.post('/profile', function (req, res, next) {
+app.post('/profile', async function (req, res, next) {
 //  console.log(req.body);
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
@@ -79,70 +95,70 @@ app.post('/profile', function (req, res, next) {
 
 //  var config = ini.parse(process.env.npm_config_key);
   
-  mysql.createConnection({
-    host: process.env.dbhost,
-    user: process.env.dbuser,
-    password: dbPassword,
-    database: process.env.dbname,
-    port: process.env.dbport,
-  }).then(function(conn){
+// (async () => {
+  try {
+    conn = await connectionp.getConnection();
+//  .then(async function(conn){
     // do stuff with conn
-    connection = conn;
+//    connection = conn;
 //    console.log('In profile connection before insert')
-    return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+    const rows = await conn.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
-  }).then(function(rows){
+//  }).then(function(rows){
 //    console.log('in reponse to query insertion')
 //    console.log(rows);
     const [{insertId}] = rows
     const myResponse = {'insertId':insertId}
     res.json(myResponse)
-    connection.end();
-  }).catch(function(error){
-    if (connection?.end) connection.end();
+    conn.release();
+  } catch(error){
+    conn?.release();
     //logs out the error
-//    console.log(error);
+    console.error(`***In /profile error: ${error}`);
     res.status(500)
     res.send('not ok')
-  });
+	next(error);
+  }
+// })();
 
   //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
 
 });
 
-app.use('/sensor/:sensid/temp/:tempVal/door/:doorState', function (req, res, next) {
+app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, res, next) {
 //  console.log('Request time: ', req.requestTime)
   const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
-  mysensorVal.logValue();
-  var connection;
-  mysql.createConnection({
-    host: process.env.dbhost,
-    user: process.env.dbuser,
-    password: dbPassword,
-    database: process.env.dbname,
-    port: process.env.dbport,
-  }).then(function(conn){
+  if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
+//  var connection;
+// (async () => {
+  try {
+    conn = await connectionp.getConnection();
+//  .then(async function(conn){
     // do stuff with conn
-    connection = conn;
-    return connection.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+//    connection = conn;
+    const rows = await conn.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
-  }).then(function(rows){
+//  }).then(function(rows){
 //    console.log(rows);
     const [{insertId}] = rows;
 	res.send(`Id: ${insertId} Sensor: ${mysensorVal.getSensor()} Temp: ${mysensorVal.gettempval()} Door: ${mysensorVal.getdoorstate()}`);
-    connection.end();
-  }).catch(function(error){
-    if (connection?.end) connection.end();
-    //logs out the error
-//    console.log(error);
+    conn.release();
+  } catch (error){
+    conn?.release();
+//logs out the error
+    console.error(`***In /sensor error: ${error}`);
     res.status(500)
-    res.send('not ok')    
-  });
+    res.send('not ok')
+	next(error);
+  };
+// })();
 })
 
 module.exports  = app;
 module.exports.server = app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
+  // Export the connection pool
+  module.exports.cp = connectionp;
 });
 
 
