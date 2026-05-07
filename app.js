@@ -1,6 +1,8 @@
 'use strict';
 const express = require('express');
 const app = express();
+// default export must be set early to avoid overwriting
+module.exports  = app;
 const sensorVal = require('./sensorval.js');
 const mysql = require('mysql2/promise');
 const fs = require('node:fs');
@@ -154,7 +156,6 @@ app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, re
 // })();
 })
 
-module.exports  = app;
 module.exports.server = app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
   // Export the connection pool
