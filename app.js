@@ -68,15 +68,16 @@ app.get('/temp', async function (req, res, next) {
 		myResponse.readingValue = readingValue;
 	}
     res.json(myResponse)
-    conn.release();
   } catch (error){
-    conn?.release();
     //logs out the error
     console.log(`***In /temp error: ${error}`);
     res.status(500)
     res.send('not ok')
 	next(error);
+  } finally {
+    conn?.release();
   }
+	  
 // })();
 //    res.send('ok')
 })
@@ -114,15 +115,16 @@ app.post('/profile', async function (req, res, next) {
     const [{insertId}] = rows
     const myResponse = {'insertId':insertId}
     res.json(myResponse)
-    conn.release();
   } catch(error){
-    conn?.release();
     //logs out the error
     console.error(`***In /profile error: ${error}`);
     res.status(500)
     res.send('not ok')
 	next(error);
+  } finally {
+    conn?.release();
   }
+	  
 // })();
 
   //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
@@ -146,15 +148,16 @@ app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, re
 //    console.log(rows);
     const [{insertId}] = rows;
 	res.send(`Id: ${insertId} Sensor: ${mysensorVal.getSensor()} Temp: ${mysensorVal.gettempval()} Door: ${mysensorVal.getdoorstate()}`);
-    conn.release();
   } catch (error){
-    conn?.release();
 //logs out the error
     console.error(`***In /sensor error: ${error}`);
     res.status(500)
     res.send('not ok')
 	next(error);
-  };
+  } finally {
+    conn?.release();
+  }
+	  
 // })();
 })
 
