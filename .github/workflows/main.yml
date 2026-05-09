@@ -105,6 +105,7 @@ jobs:
       - name: Build and push multi-arch production image
         uses: docker/build-push-action@v7
         with:
+          push: ${{ github.event_name != 'pull_request' }}
           context: .
           target: production
           push: true
