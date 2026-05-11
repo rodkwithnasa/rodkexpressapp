@@ -20,7 +20,7 @@ services:
       NODE_ENV: production
       dbport: mysql
       dbpwd_FILE: /run/secrets/db_root_password
-      dbuser: root
+      dbuser: ha
       dbpwd: ${dbpwd}
       dbname: howardTemp
       dbhost: db
@@ -50,6 +50,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: howardTemp
+      MYSQL_USER: ha
+      MYSQL_PASSWORD: ${dbpwd}
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
@@ -88,10 +91,10 @@ services:
       NODE_ENV: test
       dbport: mysql
       dbpwd_FILE: /run/secrets/db_root_password
-      dbuser: root
+      dbuser: ha
       dbpwd: ${dbpwd}
       dbname: howardTestTemp
-      dbhost: db
+      dbhost: testdb
     networks:
       - my-tier
     ports:
@@ -99,11 +102,27 @@ services:
     secrets:
       - db_root_password
     depends_on:
-      db:
+      testdb:
         condition: service_healthy
     command: ['npm', 'test']
     profiles:
       - test
+  testdb:
+    image: mysql:lts
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE: howardTestTemp
+      MYSQL_USER: ha
+      MYSQL_PASSWORD: ${dbpwd}
+    networks:
+      - my-tier
+    secrets:
+      - db_root_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", '-p$$(<"$$MYSQL_ROOT_PASSWORD_FILE")']
+      timeout: 20s
+      retries: 10
 
 volumes:
    mysql-data:
