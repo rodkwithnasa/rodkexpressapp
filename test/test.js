@@ -15,6 +15,14 @@ dbmigrate.silence(true);
 describe('rodkexpressapp routes', function() {
 //debugger;
 describe('POST /profile', function() {
+	  before('initialise DB', function () {
+		  return dbmigrate.reset(1,'test').then(function(res){
+			  return dbmigrate.up(1,'test');
+		  }).catch(function(err){
+			  console.error(err);
+			  return;
+		  });
+	  });
 
   it('responds with json', function() {
 debugger;  
@@ -36,7 +44,7 @@ debugger;
 
 	  describe('error state test',function(){		  
 		  before('reset all migrations', function() {
-			return dbmigrate.reset();
+			return dbmigrate.reset(1,'test');
 		  });
 		  it('fails to insert when no db',function() {
 			  return request(app)
@@ -54,8 +62,8 @@ debugger;
 });
   describe('GET /temp?q=id', function () {
 	  before('initialise DB', function () {
-		  return dbmigrate.reset().then(function(res){
-			  return dbmigrate.up();
+		  return dbmigrate.reset(1,'test').then(function(res){
+			  return dbmigrate.up(1,'test');
 		  }).catch(function(err){
 			  console.error(err);
 			  return;
@@ -70,7 +78,9 @@ debugger;
 //          .end(function(err,res) {
 //            if (err) {/*console.log(`Failure, err:${err}`);*/ done(err)}
 //            console.log(`Success: ${JSON.stringify(res)}`)
-            assert.equal(res.text,`{"readingValue":"${sensorinstance.tempval}"}`)
+			const first = new RegExp(`"readingValue":"${sensorinstance.tempval}"`);
+            assert.match(res.text,first);
+			assert.match(res.text,/"createdAt"\s*:\s*"([^"]+)"/);
 //            done()              
           })
       })
@@ -87,7 +97,7 @@ debugger;
 	  });
 	  describe('error state test',function(){		  
 		  before('reset all migrations', function() {
-			return dbmigrate.reset();
+			return dbmigrate.reset(1,'test');
 		  });
 		  it('fails to insert when no db',function() {
 			  return request(app)
@@ -114,11 +124,11 @@ debugger;
   });
   describe('GET /sensor/:s/temp/:t/door/:d', function() {
 	  before('setup db',function() {
-		  return dbmigrate.up();
+		  return dbmigrate.up(1,'test');
 	  });
 
 	afterEach('reset all migrations', function() {
-		return dbmigrate.reset();
+		return dbmigrate.reset(1,'test');
 	});
 
 	  it('responds with text & insert id',function() {

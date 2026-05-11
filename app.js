@@ -64,8 +64,9 @@ app.get('/temp', async function (req, res, next) {
 //    console.log(rows);
     let myResponse = {};
 	if (rows[0].length > 0) {
-		const {readingValue} = rows[0][0]
+		const {readingValue,createdAt} = rows[0][0]
 		myResponse.readingValue = readingValue;
+		myResponse.createdAt = createdAt;
 	}
     res.json(myResponse)
   } catch (error){
