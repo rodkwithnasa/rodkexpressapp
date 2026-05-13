@@ -5,8 +5,8 @@ const app = express();
 module.exports  = app;
 const sensorVal = require('./sensorval.js');
 const mysql = require('mysql2/promise');
-//export all of the db access
-module.exports.mydb = mysql;
+//export all of the db access - not needed now we know about proxyquire
+//module.exports.mydb = mysql;
 const fs = require('node:fs');
 // const ini = require('ini');
 
