@@ -1,6 +1,8 @@
+const proxyquire = require("proxyquire");
+var mysqlStub = {};
 const request = require('supertest');
 const assert = require('assert');
-const app = require('../app.js');
+var app = proxyquire('../app.js',{'mysql2/promise':mysqlStub});
 const sensorinstance = require('./sensorinstance.json');
 const { createHttpTerminator } = require('http-terminator');
 debugger;
