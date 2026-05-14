@@ -29,11 +29,8 @@ var requestTime = function (req, res, next) {
 
 app.use(requestTime)
 
-app.get('/', function (req, res) {
-  var responseText = 'Hello World!<br>'
-  responseText += '<small>Requested at: ' + req.requestTime + '</small>'
-  res.send(responseText)
-})
+const rootRoot = require('./rootRoute');
+app.use(rootRoot);
 
 app.get('/temp', async function (req, res, next) {
 //    console.log(`query param: ${req.query.q}`)
