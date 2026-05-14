@@ -162,6 +162,7 @@ debugger;
   });
 		  
 	after('close server', async function() {
+	  console.error('In close server before shutdownApp');
     // Shuts down HTTP sockets first, then kills the database connection pool
 	  await shutdownApp(); 
 

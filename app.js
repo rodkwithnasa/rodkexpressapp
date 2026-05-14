@@ -149,17 +149,26 @@ module.exports.server = app.listen(3000, () => {
 
 // Function to safely tear down the entire application structure
 const shutdownApp = () => {
+  console.error('In shutdownApp');
   return new Promise((resolve) => {
+	console.error('Before server close');
     module.exports.server.close(async () => {
+	  console.error('After server close');
       await db.closePool(); // Clears out lingering DB sockets
+	  console.error('after closePool');
       resolve();
     });
+
+    // CRITICAL: Immediately close any idle persistent connections
+    // This stops HTTP keep-alive loops from hanging your app
+    module.exports.server.closeIdleConnections();
   });
 };
 
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   console.error('SIGTERM signal received: closing HTTP server')
-  shutdownApp();
+  await shutdownApp();
+  console.error('After shutdown');
 })
 
 module.exports.shutdownApp = shutdownApp;
