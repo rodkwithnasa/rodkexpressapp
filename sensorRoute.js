@@ -12,9 +12,9 @@ router.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req,
   if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
 
   try {
-    conn = await db.pool.getConnection();
+//    conn = await db.pool.getConnection();
 
-    const rows = await conn.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+    const rows = await db.pool.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
 
     const [{insertId}] = rows;
@@ -26,7 +26,7 @@ router.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req,
     res.send('not ok')
 	next(error);
   } finally {
-    conn?.release();
+//    conn?.release();
   }
 });
 

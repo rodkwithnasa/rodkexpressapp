@@ -5,6 +5,7 @@ const router = express.Router();
 const db = require('./db');
 const bodyParser = require('body-parser');
 const sensorVal = require('./sensorval');
+var conn;
 
 router.use(bodyParser.json()); // for parsing application/json
 
@@ -14,9 +15,9 @@ router.post('/profile', async function (req, res, next) {
   if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
 
   try {
-    conn = await db.pool.getConnection();
+//    conn = await db.pool.getConnection();
 
-    const rows = await conn.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
+    const rows = await db.pool.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
       [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
 
     const [{insertId}] = rows
@@ -29,7 +30,7 @@ router.post('/profile', async function (req, res, next) {
     res.send('not ok')
 	next(error);
   } finally {
-    conn?.release();
+//    conn?.release();
   }
 });
 

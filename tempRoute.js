@@ -3,13 +3,14 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db');
+var conn;
 
 router.get('/temp', async function (req, res, next) {
 
   try {
-    conn = await db.pool.getConnection();
+//    conn = await db.pool.getConnection();
 
-    const rows = await conn.query(`select * FROM temperatureReadings where id=${req.query.q};`)
+    const rows = await db.pool.query(`select * FROM temperatureReadings where id=${req.query.q};`)
 
     let myResponse = {};
 	if (rows[0].length > 0) {
@@ -25,7 +26,7 @@ router.get('/temp', async function (req, res, next) {
     res.send('not ok')
 	next(error);
   } finally {
-    conn?.release();
+//    conn?.release();
   };
 });
 
