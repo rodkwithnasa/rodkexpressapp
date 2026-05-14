@@ -162,14 +162,31 @@ const shutdownApp = () => {
     // CRITICAL: Immediately close any idle persistent connections
     // This stops HTTP keep-alive loops from hanging your app
     module.exports.server.closeIdleConnections();
+    // Destroy every remaining active client connection
+    for (const socket of sockets) {
+      socket.destroy();
+    }
+	
   });
 };
 
 process.on('SIGTERM', async () => {
-  console.error('SIGTERM signal received: closing HTTP server')
-  await shutdownApp();
-  console.error('After shutdown');
-})
+  try {
+    await shutdownApp();
+    process.exit(0); // Clean exit for Docker
+  } catch (err) {
+    console.error('Error during shutdown:', err);
+    process.exit(1); // Error state exit
+  }
+});
+
+const sockets = new Set();
+
+module.exports.server.on('connection', (socket) => {
+  sockets.add(socket);
+  socket.on('close', () => sockets.delete(socket));
+});
+
 
 module.exports.shutdownApp = shutdownApp;
 
