@@ -4,13 +4,7 @@ const app = express();
 // default export must be set early to avoid overwriting
 module.exports  = app;
 const sensorVal = require('./sensorval.js');
-//export all of the db access - not needed now we know about proxyquire
-//module.exports.mydb = mysql;
-
-// const ini = require('ini');
-
 const db = require('./db');
-
 	
 var myLogger = function (req, res, next) {
 //  console.log('LOGGED');
@@ -18,8 +12,7 @@ var myLogger = function (req, res, next) {
   next()
 }
 
-app.use(myLogger)
-
+app.use(myLogger);
 
 var requestTime = function (req, res, next) {
   req.requestTime = Date.now()
@@ -28,19 +21,12 @@ var requestTime = function (req, res, next) {
 
 app.use(requestTime)
 
-const rootRoot = require('./rootRoute');
-app.use(rootRoot);
+const rootRoute = require('./rootRoute');
+app.use(rootRoute);
 
 const tempRoute = require('./tempRoute');
 app.use(tempRoute);
 
-
-/*
-app.use('/user/:id', function (req, res, next) {
-  console.log('Request Type:', req.method)
-  next()
-})
-*/
 const profileRoute = require('./profileRoute');
 app.use(profileRoute);
 
