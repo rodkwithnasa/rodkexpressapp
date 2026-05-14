@@ -160,6 +160,11 @@ const shutdownApp = () => {
   });
 };
 
+process.on('SIGTERM', () => {
+  console.error('SIGTERM signal received: closing HTTP server')
+  shutdownApp();
+})
+
 module.exports.shutdownApp = shutdownApp;
 
 
