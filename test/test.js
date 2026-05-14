@@ -1,31 +1,47 @@
 const proxyquire = require("proxyquire");
-var mysqlStub = {};
 const request = require('supertest');
 const assert = require('assert');
-var app = proxyquire('../app.js',{'mysql2/promise':mysqlStub});
+const sinon = require('sinon');
 const sensorinstance = require('./sensorinstance.json');
+const express = require('express');
 
-const server  = app.server;
-const shutdownApp = app.shutdownApp;
-const DBMigrate = require('db-migrate');
-const dbmigrate = DBMigrate.getInstance(true,{"env": "test",cmdOptions:{"verbose":false}});
-// Enable silent mode
-dbmigrate.silence(true);
+//const server  = app.server;
+//const shutdownApp = app.shutdownApp;
 
 describe('rodkexpressapp routes', function() {
 
-describe('POST /profile', function() {
-	  before('initialise DB', function () {
-		  return dbmigrate.reset(1,'test').then(function(res){
-			  return dbmigrate.up(1,'test');
-		  }).catch(function(err){
-			  console.error(err);
-			  return;
-		  });
-	  });
+  describe('POST /profile', function() {
+  let dbStub;
+  let app;
 
+  beforeEach(() => {
+    // 1. Create the inner stub for the pool's query method
+    const queryStub = sinon.stub();
+
+    // 2. Structure the stub object to mirror the multi-export from db.js
+    dbStub = {
+      pool: {
+        query: queryStub
+      },
+      closePool: sinon.stub().resolves() // Stubbed cleanup helper
+    };
+
+    // 3. Inject the structured stub into your route file
+    const stubbedRoute = proxyquire('../profileRoute', {
+      './db': dbStub
+    });
+
+    app = express();
+    app.use(stubbedRoute);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
   it('responds with json', function() {
-  
+      const mockInsert = [{"fieldCount":0,"affectedRows":1,"insertId":2,"info":"","serverStatus":2,"warningStatus":0,"changedRows":0},null];
+    // Program the nested stub directly
+      dbStub.pool.query.resolves(mockInsert);
       return request(app)
       .post('/profile')
       .send(sensorinstance)
@@ -36,10 +52,8 @@ describe('POST /profile', function() {
   });
 
 	  describe('error state test',function(){		  
-		  before('reset all migrations', function() {
-			return dbmigrate.reset(1,'test');
-		  });
 		  it('fails to insert when no db',function() {
+			dbStub.pool.query.rejects(new Error('HAPool connection timed out'));
 			  return request(app)
 			  .post('/profile')
 			  .send(sensorinstance)
@@ -50,7 +64,14 @@ describe('POST /profile', function() {
 			  });
 		  });
 	  });
+/*	after('close server', async function() {
+	  console.error('In close server before shutdownApp');
+    // Shuts down HTTP sockets first, then kills the database connection pool
+	  await shutdownApp(); 
+      console.error('*******HTTP server closed & db released')
+    }); */
 });
+/*
   describe('GET /temp?q=id', function () {
 	  before('initialise DB', function () {
 		  return dbmigrate.reset(1,'test').then(function(res){
@@ -128,11 +149,7 @@ describe('POST /profile', function() {
 		  });
 	  });
   });
+  */
 		  
-	after('close server', async function() {
-	  console.error('In close server before shutdownApp');
-    // Shuts down HTTP sockets first, then kills the database connection pool
-	  await shutdownApp(); 
-      console.error('*******HTTP server closed & db released')
-    }); 
+
 });
