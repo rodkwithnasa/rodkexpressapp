@@ -7,6 +7,7 @@ const sensorinstance = require('./sensorinstance.json');
 const { createHttpTerminator } = require('http-terminator');
 debugger;
 const server  = app.server;
+const shutdownApp = app.shutdownApp;
 const httpTerminator = createHttpTerminator({ server })
 const DBMigrate = require('db-migrate');
 const dbmigrate = DBMigrate.getInstance(true,{"env": "test",cmdOptions:{"verbose":false}});
@@ -160,12 +161,12 @@ debugger;
 	  });
   });
 		  
-	after('close server', function() {
-    return server.close(() => {
-      console.error('*******HTTP server closed')
-	  app.cp.end((err)=> {console.error('error closing dbpool: ${err}');});
-	  console.error('*******After cp end');
-    }) /* httpTerminator.terminate()
+	after('close server', async function() {
+    // Shuts down HTTP sockets first, then kills the database connection pool
+	  await shutdownApp(); 
+
+      console.error('*******HTTP server closed & db released')
+     /* httpTerminator.terminate()
 	.then((res)=>{
 		console.log(`Terminate(then):${res}`);
 //		done();

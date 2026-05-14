@@ -4,22 +4,12 @@ const app = express();
 // default export must be set early to avoid overwriting
 module.exports  = app;
 const sensorVal = require('./sensorval.js');
-var mysql = require('mysql2/promise');
 //export all of the db access - not needed now we know about proxyquire
 //module.exports.mydb = mysql;
-const fs = require('node:fs');
+
 // const ini = require('ini');
 
-const dbPassword = process.env.dbpwd ? process.env.dbpwd : fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
-
-module.exports.cp = mysql.createPool({
-		connectionLimit : 10,
-		host: process.env.dbhost,
-		user: process.env.dbuser,
-		password: dbPassword,
-		database: process.env.dbname,
-		port: process.env.dbport
-    });
+const db = require('./db');
 
 var conn;
 	
@@ -49,7 +39,7 @@ app.get('/temp', async function (req, res, next) {
 //    console.log(`query param: ${req.query.q}`)
 // (async () => {
   try {
-    conn = await module.exports.cp.getConnection();
+    conn = await db.pool.getConnection();
 //  .then(async function(conn){
     // do stuff with conn
 //    connection = conn;
@@ -97,7 +87,7 @@ app.post('/profile', async function (req, res, next) {
   
 // (async () => {
   try {
-    conn = await module.exports.cp.getConnection();
+    conn = await db.pool.getConnection();
 //  .then(async function(conn){
     // do stuff with conn
 //    connection = conn;
@@ -133,7 +123,7 @@ app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, re
 //  var connection;
 // (async () => {
   try {
-    conn = await module.exports.cp.getConnection();
+    conn = await db.pool.getConnection();
 //  .then(async function(conn){
     // do stuff with conn
 //    connection = conn;
@@ -160,5 +150,16 @@ module.exports.server = app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
 });
 
+// Function to safely tear down the entire application structure
+const shutdownApp = () => {
+  return new Promise((resolve) => {
+    module.exports.server.close(async () => {
+      await db.closePool(); // Clears out lingering DB sockets
+      resolve();
+    });
+  });
+};
+
+module.exports.shutdownApp = shutdownApp;
 
 
