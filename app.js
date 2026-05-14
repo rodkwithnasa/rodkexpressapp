@@ -11,7 +11,6 @@ const sensorVal = require('./sensorval.js');
 
 const db = require('./db');
 
-var conn;
 	
 var myLogger = function (req, res, next) {
 //  console.log('LOGGED');
@@ -45,36 +44,9 @@ app.use('/user/:id', function (req, res, next) {
 const profileRoute = require('./profileRoute');
 app.use(profileRoute);
 
+const sensorRoute = require('./sensorRoute');
+app.use(sensorRoute);
 
-app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, res, next) {
-//  console.log('Request time: ', req.requestTime)
-  const mysensorVal = new sensorVal(req.params.sensid,req.params.tempVal,req.params.doorState)
-  if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
-//  var connection;
-// (async () => {
-  try {
-    conn = await db.pool.getConnection();
-//  .then(async function(conn){
-    // do stuff with conn
-//    connection = conn;
-    const rows = await conn.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
-      [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
-//  }).then(function(rows){
-//    console.log(rows);
-    const [{insertId}] = rows;
-	res.send(`Id: ${insertId} Sensor: ${mysensorVal.getSensor()} Temp: ${mysensorVal.gettempval()} Door: ${mysensorVal.getdoorstate()}`);
-  } catch (error){
-//logs out the error
-    console.error(`***In /sensor error: ${error}`);
-    res.status(500)
-    res.send('not ok')
-	next(error);
-  } finally {
-    conn?.release();
-  }
-	  
-// })();
-})
 
 module.exports.server = app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
