@@ -11,10 +11,8 @@ const fs = require('node:fs');
 // const ini = require('ini');
 
 const dbPassword = process.env.dbpwd ? process.env.dbpwd : fs.readFileSync(process.env.dbpwd_FILE, 'utf8');
-var connectionp;
-(async () => {
-  try {
-	const cp = await mysql.createPool({
+
+module.exports.cp = mysql.createPool({
 		connectionLimit : 10,
 		host: process.env.dbhost,
 		user: process.env.dbuser,
@@ -22,11 +20,7 @@ var connectionp;
 		database: process.env.dbname,
 		port: process.env.dbport
     });
-	connectionp = cp;
-  } catch (error) {
-	  throw error;
-  }
-})();
+
 var conn;
 	
 var myLogger = function (req, res, next) {
@@ -55,7 +49,7 @@ app.get('/temp', async function (req, res, next) {
 //    console.log(`query param: ${req.query.q}`)
 // (async () => {
   try {
-    conn = await connectionp.getConnection();
+    conn = await module.exports.cp.getConnection();
 //  .then(async function(conn){
     // do stuff with conn
 //    connection = conn;
@@ -103,7 +97,7 @@ app.post('/profile', async function (req, res, next) {
   
 // (async () => {
   try {
-    conn = await connectionp.getConnection();
+    conn = await module.exports.cp.getConnection();
 //  .then(async function(conn){
     // do stuff with conn
 //    connection = conn;
@@ -139,7 +133,7 @@ app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, re
 //  var connection;
 // (async () => {
   try {
-    conn = await connectionp.getConnection();
+    conn = await module.exports.cp.getConnection();
 //  .then(async function(conn){
     // do stuff with conn
 //    connection = conn;
@@ -164,8 +158,6 @@ app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, re
 
 module.exports.server = app.listen(3000, () => {
   console.log('Example app listening on port 3000!');
-  // Export the connection pool
-  module.exports.cp = connectionp;
 });
 
 
