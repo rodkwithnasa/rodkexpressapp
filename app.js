@@ -42,48 +42,9 @@ app.use('/user/:id', function (req, res, next) {
   next()
 })
 */
-const bodyParser = require('body-parser');
+const profileRoute = require('./profileRoute');
+app.use(profileRoute);
 
-app.use(bodyParser.json()); // for parsing application/json
-
-app.post('/profile', async function (req, res, next) {
-//  console.log(req.body);
-//  console.log('Request time: ', req.requestTime)
-  const mysensorVal = new sensorVal(req.body.sensor, req.body.tempval, req.body.doorstate)
-  if (process.env?.NODE_ENV === 'test') { mysensorVal.logValue(); }
-
-//  var config = ini.parse(process.env.npm_config_key);
-  
-// (async () => {
-  try {
-    conn = await db.pool.getConnection();
-//  .then(async function(conn){
-    // do stuff with conn
-//    connection = conn;
-//    console.log('In profile connection before insert')
-    const rows = await conn.query('INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)',
-      [mysensorVal.gettempval(), mysensorVal.getSensor(),mysensorVal.getdoorstate()]);
-//  }).then(function(rows){
-//    console.log('in reponse to query insertion')
-//    console.log(rows);
-    const [{insertId}] = rows
-    const myResponse = {'insertId':insertId}
-    res.json(myResponse)
-  } catch(error){
-    //logs out the error
-    console.error(`***In /profile error: ${error}`);
-    res.status(500)
-    res.send('not ok')
-	next(error);
-  } finally {
-    conn?.release();
-  }
-	  
-// })();
-
-  //res.send('Sensor :'+ mysensorVal.getSensor() + ' Temp :' + mysensorVal.gettempval() + ' Door: ' + mysensorVal.getdoorstate())
-
-});
 
 app.get('/sensor/:sensid/temp/:tempVal/door/:doorState', async function (req, res, next) {
 //  console.log('Request time: ', req.requestTime)
