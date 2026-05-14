@@ -32,37 +32,9 @@ app.use(requestTime)
 const rootRoot = require('./rootRoute');
 app.use(rootRoot);
 
-app.get('/temp', async function (req, res, next) {
-//    console.log(`query param: ${req.query.q}`)
-// (async () => {
-  try {
-    conn = await db.pool.getConnection();
-//  .then(async function(conn){
-    // do stuff with conn
-//    connection = conn;
-    const rows = await conn.query(`select * FROM temperatureReadings where id=${req.query.q};`)
-//  }).then(function(rows){
-//    console.log(rows);
-    let myResponse = {};
-	if (rows[0].length > 0) {
-		const {readingValue,createdAt} = rows[0][0]
-		myResponse.readingValue = readingValue;
-		myResponse.createdAt = createdAt;
-	}
-    res.json(myResponse)
-  } catch (error){
-    //logs out the error
-    console.log(`***In /temp error: ${error}`);
-    res.status(500)
-    res.send('not ok')
-	next(error);
-  } finally {
-    conn?.release();
-  }
-	  
-// })();
-//    res.send('ok')
-})
+const tempRoute = require('./tempRoute');
+app.use(tempRoute);
+
 
 /*
 app.use('/user/:id', function (req, res, next) {
