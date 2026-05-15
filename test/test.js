@@ -5,9 +5,6 @@ const sinon = require('sinon');
 const sensorinstance = require('./sensorinstance.json');
 const express = require('express');
 
-//const server  = app.server;
-//const shutdownApp = app.shutdownApp;
-
 describe('rodkexpressapp routes', function() {
 
     describe('POST /profile', function() {
