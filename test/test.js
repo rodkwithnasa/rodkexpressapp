@@ -48,7 +48,10 @@ describe('rodkexpressapp routes', function() {
 		  .set('Content-Type', 'application/json')
 		  .set('Accept','application/json')
 		  .expect(200,/\{\s*\"insertId\"\:\s*\d*\s*\}/)
-		  .expect('Content-Type', 'application/json; charset=utf-8').then(res => {});
+		  .expect('Content-Type', 'application/json; charset=utf-8').then(res => {
+    // Assert against the nested stub reference
+		  sinon.assert.calledWith(dbStub.pool.query, 'INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)');			  
+		});
 	  });
 
 	  it('fails to insert when no db',function() {
@@ -103,6 +106,8 @@ describe('rodkexpressapp routes', function() {
 			const first = new RegExp(`"readingValue":"${sensorinstance.tempval}"`);
             assert.match(res.text,first);
 			assert.match(res.text,/"createdAt"\s*:\s*"([^"]+)"/);              
+    // Assert against the nested stub reference
+			sinon.assert.calledWith(dbStub.pool.query, `select * FROM temperatureReadings where id=1;`);
           })
       })
 	  it('responds with empty object on out of range id', function() {
@@ -114,6 +119,8 @@ describe('rodkexpressapp routes', function() {
 		  .expect(200)
 		  .expect('Content-Type', 'application/json; charset=utf-8').then(res => {
 			  assert.equal(res.text, '{}')
+    // Assert against the nested stub reference
+			sinon.assert.calledWith(dbStub.pool.query, `select * FROM temperatureReadings where id=2;`);
 		  });
 	  });
 	  it('fails to insert when no db',function() {
@@ -188,6 +195,8 @@ describe('rodkexpressapp routes', function() {
 		  .expect(200,/^Id: \d+ Sensor: 12345 Temp: 18 Door: open$/)
 		  .expect('Content-Type','text/html; charset=utf-8')
 		  .expect('Content-Length', '39').then(res => {
+    // Assert against the nested stub reference
+			sinon.assert.calledWith(dbStub.pool.query, 'INSERT INTO temperatureReadings(readingValue, deviceIdentity, openClosed) VALUES (?,?,?)');
 		  });
 	  });
 	  
