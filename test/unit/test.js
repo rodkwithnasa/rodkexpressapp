@@ -24,7 +24,7 @@ describe('rodkexpressapp routes', function() {
 		};
 
 		// 3. Inject the structured stub into your route file
-		const stubbedRoute = proxyquire('../profileRoute', {
+		const stubbedRoute = proxyquire('../../profileRoute', {
 		  './db': dbStub
 		});
 
@@ -81,7 +81,7 @@ describe('rodkexpressapp routes', function() {
 		};
 
 		// 3. Inject the structured stub into your route file
-		const stubbedRoute = proxyquire('../tempRoute', {
+		const stubbedRoute = proxyquire('../../tempRoute', {
 		  './db': dbStub
 		});
 
@@ -135,7 +135,7 @@ describe('rodkexpressapp routes', function() {
 
 	  beforeEach(() => {
 		// 3. Inject the null stub into your route file
-		const stubbedRoute = proxyquire('../rootRoute', {
+		const stubbedRoute = proxyquire('../../rootRoute', {
 
 		});
 
@@ -172,7 +172,7 @@ describe('rodkexpressapp routes', function() {
 		};
 
 		// 3. Inject the structured stub into your route file
-		const stubbedRoute = proxyquire('../sensorRoute', {
+		const stubbedRoute = proxyquire('../../sensorRoute', {
 		  './db': dbStub
 		});
 
