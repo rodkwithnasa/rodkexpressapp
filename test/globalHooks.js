@@ -7,10 +7,10 @@ before(async function() {
   console.log('🔄 Wiping and migrating Docker test database...');
 
   // Force db-migrate to use your test environment settings
-  const dbmigrate = DBMigrate.getInstance(true, { env: 'test' });
+  const dbmigrate = DBMigrate.getInstance(true, { env: 'test',cmdOptions:{"verbose":false}});
 
   // 1. Drop existing data/tables completely to clear residual state
-//  await dbmigrate.reset();
+  await dbmigrate.reset();
 
   // 2. Run all up migrations to construct a fresh schema copies
   await dbmigrate.up();
