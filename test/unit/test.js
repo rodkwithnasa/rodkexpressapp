@@ -155,6 +155,33 @@ describe('rodkexpressapp routes', function() {
 	});
   }); // end of root Route test
 
+  describe('GET /info', function () {
+	  let app;
+
+	  beforeEach(() => {
+		// 3. Inject the null stub into your route file
+		const stubbedRoute = proxyquire('../../infoRoute', {
+
+		});
+
+		app = express();
+		app.use(stubbedRoute);
+	  });
+
+	  afterEach(() => {
+		sinon.restore();
+	  });
+	it('responds with route info',function() {
+		return request(app)
+		.get('/info')
+		.expect(200)
+		.expect('Content-Length', '345')
+		.expect('Content-Type','text/html; charset=utf-8').then( res => {
+		});
+	});
+  }); // end of info Route test
+
+
   describe('GET /sensor/:s/temp/:t/door/:d', function() {
 	  let dbStub;
 	  let app;

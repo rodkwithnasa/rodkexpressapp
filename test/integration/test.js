@@ -102,6 +102,16 @@ describe('POST /profile', function() {
 		});
 	});
   });
+  describe('GET /info', function () {
+	it('responds with route info',function() {
+		return request(app)
+		.get('/info')
+		.expect(200)
+		.expect('Content-Length', '345')
+		.expect('Content-Type','text/html; charset=utf-8').then( res => {
+		});
+	});
+  });
   describe('GET /sensor/:s/temp/:t/door/:d', function() {
 	  before('setup db',function() {
 		  return dbmigrate.up();
