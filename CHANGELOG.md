@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/rodkwithnasa/rodkexpressapp/compare/v2.0.1...v2.1.0) (2026-06-09)
+
+
+### Features
+
+* **api:** add new info route ([da45041](https://github.com/rodkwithnasa/rodkexpressapp/commit/da45041c1825e4f63cfd731ee24c25ca2ff3a550))
+
 ## [2.0.1](https://github.com/rodkwithnasa/rodkexpressapp/compare/v2.0.0...v2.0.1) (2026-05-11)
 
 

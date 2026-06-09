@@ -1,11 +1,11 @@
 {
   "name": "rodkexpressapp",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "test of express",
   "main": "app.js",
   "scripts": {
     "test:integration": "NODE_ENV=test nyc mocha 'test/globalHooks.js' 'test/integration/**/*test.js' --timeout 30000",
-	"test": "[ \"$CI\" = \"true\" ] && npm run test:integration || npm run test:unit",
+    "test": "[ \"$CI\" = \"true\" ] && npm run test:integration || npm run test:unit",
     "test:unit": "NODE_ENV=test nyc mocha 'test/unit/*test.js' ",
     "proxy": "~/cloud-sql-proxy crucial-garden-217908:us-central1:howardinstance",
     "dbcreate": "mysql -u root -p --host 127.0.0.1 --port 3306 --get-server-public-key < db/databaseCreate.txt",
